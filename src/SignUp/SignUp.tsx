@@ -72,7 +72,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ match }) => {
                 />
                 <TextField
                     type="password"
-                    placeholder='Password'
+                    placeholder='Confirm password'
                     onInput={(e: string) => setRepeatPassword(e)}
                     processing={loading}
                 />
@@ -83,7 +83,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ match }) => {
                     onInput={(e: number) => setCity(e)}
                 />
                 <Errors loading={`${loading}`}>
-                    
+
                 </Errors>
                 <FormBottom>
                     <Button
@@ -98,7 +98,10 @@ const SignUp: React.FC<RouteComponentProps> = ({ match }) => {
                     </OtherAction>
                 </FormBottom>
             </Form>
-            <Picture></Picture>
+            <Picture>
+              <h1>Treemotion</h1>
+              <span>Wybiegaj swoją przyszłość.</span>
+            </Picture>
         </Container>
     )
 }
@@ -151,6 +154,20 @@ const Picture = styled.div`
     background: url(${Image}) center;
     background-size: cover;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    h1 {
+      color: #f2f2f2;
+      text-shadow: 0 0 1rem rgba(0,0,0,.6);
+      font-size: 6rem;
+    }
+    span {
+      color: #f2f2f2;
+      text-shadow: 0 0 1rem rgba(0,0,0,.6);
+      font-size: 2rem;
+    }
 `
 
 export default withRouter(SignUp)
