@@ -7,6 +7,9 @@ import Workouts from './Workouts/Workouts'
 import Challenges from './Challenges/Challenges'
 import Rankings from './Rankings/Rankings';
 import Settings from './Settings/Settings';
+import Verify from './Verify/Verify'
+import ForgotPassword from './ForgotPassword/ForgotPassword'
+import ProvideNewPassword from './ProvideNewPassword/ProvideNewPassword'
 
 const GlobalStyle = createGlobalStyle`
     * {
@@ -20,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
     *::-webkit-scrollbar {
         width: 5px;
     }
-        
+
     *::-webkit-scrollbar-thumb {
         background-color: #146D52;
         outline: 1px solid slategrey;
@@ -53,6 +56,9 @@ function Application() {
         <Switch>
           <UnAuthenticatedRoute path="/sign-in" component={SignIn} />
           <UnAuthenticatedRoute path="/sign-up" component={SignUp} />
+          <UnAuthenticatedRoute path="/verify/:id" component={Verify} />
+          <UnAuthenticatedRoute path="/forgotten-password" component={ForgotPassword} />
+          <UnAuthenticatedRoute path="/password-reset/:id" component={ProvideNewPassword} />
           <AuthenticatedRoute path="/workouts" render={() => <Workouts/>} />
           <AuthenticatedRoute path="/challenges" render={() => <Challenges/>} />
           <AuthenticatedRoute path="/rankings" render={() => <Rankings/>} />

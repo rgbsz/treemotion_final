@@ -11,7 +11,6 @@ import NavigationPanel from '../global/components/NavigationPanel'
 import TopPanel from '../global/components/TopPanel'
 
 const Map = withScriptjs(withGoogleMap((props: any) => {
-    console.log(props.workout)
     return (
         <GoogleMap
             defaultZoom={12}
@@ -46,7 +45,6 @@ const Workouts: React.FC<RouteComponentProps> = ({ match }) => {
     const user = useSelector((state: any) => state.user)
     const workouts = useSelector((state: any) => state.workouts)
     const [workout, setWorkout] = useState<any>(null)
-    console.log(workout)
     useEffect(() => {
         if(!accessToken) fetchAccessToken()
         else if(!user) fetchUser(accessToken)

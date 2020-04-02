@@ -21,10 +21,12 @@ const Settings: React.FC<RouteComponentProps> = ({ match }) => {
     const [name, setName] = useState<null | string>(null)
     const [email, setEmail] = useState<null | string>(null)
     const [city, setCity] = useState<null | number>(null)
+    const [password, setPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [passwordError, setPasswordError] = useState<null | string>(null)
     const [loading_1, setLoading_1] = useState(false)
+    const [loading_2, setLoading_2] = useState(false)
     useEffect(() => {
         if(!accessToken) fetchAccessToken()
         else if(!user) fetchUser(accessToken)
@@ -47,6 +49,7 @@ const Settings: React.FC<RouteComponentProps> = ({ match }) => {
                 },
             )
             const res = await query.json()
+            console.log(res)
             if (!res.success) {
                 console.log(res)
                 setLoading_1(false)
@@ -62,20 +65,18 @@ const Settings: React.FC<RouteComponentProps> = ({ match }) => {
     }
     async function handleSavePassword(e: any) {
         e.preventDefault()
-        if(newPassword !== confirmPassword && (newPassword !== '' || confirmPassword !== '')) {
-            setPasswordError('Password must be the same.')
-        }
-        else if(newPassword === '' || confirmPassword === '') {
-            setPasswordError('None of these fields can be empty.')
-        }
+        setLoading_2(true)
+        if(newPassword !== confirmPassword && (newPassword !== '' || confirmPassword !== '')) setPasswordError('Password must be the same.')
+        else if(newPassword === '' || confirmPassword === '') setPasswordError('None of these fields can be empty.')
         else {
-            try {     
+            try {
                 const query = await fetch(
-                    'https://treemotion.herokuapp.com/user/update',
+                    'https://treemotion.herokuapp.com/user/update-password',
                     {
                         method: 'PUT',
                         body: JSON.stringify({
-                            password: newPassword
+                            password: password,
+                            newPassword: newPassword
                         }),
                         headers: { 'Content-type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
                     },
@@ -83,15 +84,16 @@ const Settings: React.FC<RouteComponentProps> = ({ match }) => {
                 const res = await query.json()
                 if (!res.success) {
                     console.log(res)
-                    setPasswordError(null)
+                    setPasswordError(res.error)
                 }
                 else {
-                    setPasswordError(null)
+                    setPasswordError('Password has changed.')
                 }
             } catch(e) {
                 console.log(`Error: ${e.message}`)
             }
         }
+        setLoading_2(false)
     }
     if(request) {
         return (
@@ -120,14 +122,14 @@ const Settings: React.FC<RouteComponentProps> = ({ match }) => {
                         />
                     </Form>
                     <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleSavePassword(e)}>
-                        <StyledTextField className='styledTextField' type='password' placeholder='Old password' onInput={(e: string) => console.log(e)} processing={true}/>
-                        <StyledTextField className='styledTextField' type='password' placeholder='New password' onInput={(e: string) => setNewPassword(e)} processing={true}/>
-                        <StyledTextField className='styledTextField' type='password' placeholder='Confirm new password' onInput={(e: string) => setConfirmPassword(e)} processing={true}/>
+                        <StyledTextField className='styledTextField' type='password' placeholder='Old password' onInput={(e: string) => setPassword(e)} processing={loading_2}/>
+                        <StyledTextField className='styledTextField' type='password' placeholder='New password' onInput={(e: string) => setNewPassword(e)} processing={loading_2}/>
+                        <StyledTextField className='styledTextField' type='password' placeholder='Confirm new password' onInput={(e: string) => setConfirmPassword(e)} processing={loading_2}/>
                         <Error>{passwordError && passwordError}</Error>
                         <StyledButton
                             className='styledButton'
                             text='Save changes'
-                            loading={true}
+                            loading={loading_2}
                         />
                     </Form>
                 </Content>
@@ -170,7 +172,6 @@ const Form = styled.form({
 })
 
 const Error = styled.span({
-    marginTop: '1rem',
     fontSize: '.8rem',
     color: 'red'
 })

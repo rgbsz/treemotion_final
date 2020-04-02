@@ -1,88 +1,78 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Helmet } from 'react-helmet'
-import { RouteComponentProps, withRouter, Link, useHistory } from 'react-router-dom'
+import { RouteComponentProps, withRouter, Link, useHistory, useParams } from 'react-router-dom'
 
 import TextField from './components/TextField'
 import Button from './components/Button'
 import Image from './img/sign_in.jpg'
-import { useDispatch } from 'react-redux'
-import { setAccessToken } from '../redux/actions'
 
-const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
+const ProvideNewPassword: React.FC<RouteComponentProps> = ({ match }) => {
     let history = useHistory()
-    const dispatch = useDispatch()
-    const [email, setEmail] = useState(localStorage.getItem('defaultEmail') ? localStorage.getItem('defaultEmail') : '')
-    const [password, setPassword] = useState('')
+    const [newPassword, setNewPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
-    async function SignIn(e: any) {
+    const [error, setError] = useState<string | boolean>(false)
+    const { id } = useParams()
+    async function saveChanges(e: any) {
+      setLoading(true)
+      e.preventDefault()
+      if(newPassword !== confirmPassword && (newPassword !== '' || confirmPassword !== '')) setError('Password must be the same.')
+      else if(newPassword === '' || confirmPassword === '') setError('None of these fields can be empty.')
+      else {
         try {
-            e.preventDefault()
-            setLoading(true)
             const query = await fetch(
-                'https://treemotion.herokuapp.com/user/signin',
+                'https://treemotion.herokuapp.com/user/reset-password',
                 {
                     method: 'POST',
-                    body: JSON.stringify({ email: email, password: password }),
+                    body: JSON.stringify({ password: newPassword, token: id }),
                     headers: { 'Content-type': 'application/json' },
                 },
             )
             const res = await query.json()
             if (!res.success) {
-                setError(true)
-                setLoading(false)
+                setError(res.error)
             } else {
-                if(localStorage.getItem('defaultEmail')) localStorage.removeItem('defaultEmail')
-                dispatch(setAccessToken(res.accessToken))
-                localStorage.setItem('refreshToken', res.refreshToken)
-                history.push(`/sign-up`)
+                history.push('/sign-in')
             }
         } catch(e) {
             console.log(`Error: ${e.message}`)
         }
+      }
+      setLoading(false)
     }
     return (
         <Container>
             <Helmet>
-                <title>TreeMotion - Login</title>
+                <title>Treemotion - reset password</title>
             </Helmet>
-            <Form onSubmit={(e: any) => SignIn(e)}>
+            <Form onSubmit={(e: any) => saveChanges(e)}>
                 <TextField
-                    type="text"
-                    placeholder='E-mail address'
-                    onInput={(e: string) => setEmail(e)}
+                    type="password"
+                    placeholder='New password'
+                    onInput={(e: string) => setNewPassword(e)}
                     processing={loading}
-                    defaultValue={localStorage.getItem('defaultEmail') ? `${localStorage.getItem('defaultEmail')}` : ''}
                 />
                 <TextField
                     type="password"
-                    placeholder='Password'
-                    onInput={(e: string) => setPassword(e)}
+                    placeholder='Confirm new password'
+                    onInput={(e: string) => setConfirmPassword(e)}
                     processing={loading}
                 />
                 <Error loading={`${loading}`}>
-                    {error && 'Wrong email or password.'}
+                    {error && error}
                 </Error>
                 <FormBottom>
                     <Button
-                        text='Login'
+                        text='Save changes'
                         loading={loading}
                     />
-                    <ActionsContainer>
-                      <OtherAction
-                          to={`/forgotten-password`}
-                          loading={`${loading}`}
-                      >
-                          I forgot my password
-                      </OtherAction>
-                      <OtherAction
-                          to={`/sign-up`}
-                          loading={`${loading}`}
-                      >
-                          I don't have account
-                      </OtherAction>
-                    </ActionsContainer>
+                    <OtherAction
+                        to={`/sign-in`}
+                        loading={`${loading}`}
+                    >
+                        Go back
+                    </OtherAction>
                 </FormBottom>
             </Form>
             <Picture></Picture>
@@ -123,13 +113,8 @@ const FormBottom = styled.div`
     width: 17rem;
 `
 
-const ActionsContainer = styled.div({
-  margin: '1rem 0 0 .6rem',
-  display: 'flex',
-  flexDirection: 'column'
-})
-
 const OtherAction = styled(Link)<{ loading: string }>`
+    margin: 0.7rem 0 0 0.6rem;
     color: ${props => (props.loading === 'true' ? '#cccccc' : 'black')};
     pointer-events: ${props => (props.loading === 'true' ? 'none' : 'all')};
     font-family: 'Inter';
@@ -145,4 +130,4 @@ const Picture = styled.div`
     z-index: 1;
 `
 
-export default withRouter(SignIn)
+export default withRouter(ProvideNewPassword)

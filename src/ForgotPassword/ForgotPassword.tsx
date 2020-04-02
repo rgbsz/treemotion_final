@@ -6,37 +6,31 @@ import { RouteComponentProps, withRouter, Link, useHistory } from 'react-router-
 import TextField from './components/TextField'
 import Button from './components/Button'
 import Image from './img/sign_in.jpg'
-import { useDispatch } from 'react-redux'
-import { setAccessToken } from '../redux/actions'
 
-const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
+const ForgotPassword: React.FC<RouteComponentProps> = ({ match }) => {
     let history = useHistory()
-    const dispatch = useDispatch()
-    const [email, setEmail] = useState(localStorage.getItem('defaultEmail') ? localStorage.getItem('defaultEmail') : '')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
-    async function SignIn(e: any) {
+    const [error, setError] = useState<string | boolean>(false)
+    async function fetchForgotPassword(e: any) {
         try {
             e.preventDefault()
             setLoading(true)
             const query = await fetch(
-                'https://treemotion.herokuapp.com/user/signin',
+                'https://treemotion.herokuapp.com/user/send-reset-email',
                 {
                     method: 'POST',
-                    body: JSON.stringify({ email: email, password: password }),
+                    body: JSON.stringify({ email: email }),
                     headers: { 'Content-type': 'application/json' },
                 },
             )
             const res = await query.json()
             if (!res.success) {
-                setError(true)
+                setError(`There's no account with provided email address.`)
                 setLoading(false)
             } else {
-                if(localStorage.getItem('defaultEmail')) localStorage.removeItem('defaultEmail')
-                dispatch(setAccessToken(res.accessToken))
-                localStorage.setItem('refreshToken', res.refreshToken)
-                history.push(`/sign-up`)
+                setError(`Please check your email for further instructions.`)
+                setLoading(false)
             }
         } catch(e) {
             console.log(`Error: ${e.message}`)
@@ -45,9 +39,9 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
     return (
         <Container>
             <Helmet>
-                <title>TreeMotion - Login</title>
+                <title>Treemotion - reset password</title>
             </Helmet>
-            <Form onSubmit={(e: any) => SignIn(e)}>
+            <Form onSubmit={(e: any) => fetchForgotPassword(e)}>
                 <TextField
                     type="text"
                     placeholder='E-mail address'
@@ -55,34 +49,20 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
                     processing={loading}
                     defaultValue={localStorage.getItem('defaultEmail') ? `${localStorage.getItem('defaultEmail')}` : ''}
                 />
-                <TextField
-                    type="password"
-                    placeholder='Password'
-                    onInput={(e: string) => setPassword(e)}
-                    processing={loading}
-                />
                 <Error loading={`${loading}`}>
-                    {error && 'Wrong email or password.'}
+                    {error && error}
                 </Error>
                 <FormBottom>
                     <Button
-                        text='Login'
+                        text='Send email'
                         loading={loading}
                     />
-                    <ActionsContainer>
-                      <OtherAction
-                          to={`/forgotten-password`}
-                          loading={`${loading}`}
-                      >
-                          I forgot my password
-                      </OtherAction>
-                      <OtherAction
-                          to={`/sign-up`}
-                          loading={`${loading}`}
-                      >
-                          I don't have account
-                      </OtherAction>
-                    </ActionsContainer>
+                    <OtherAction
+                        to={`/sign-in`}
+                        loading={`${loading}`}
+                    >
+                        Go back
+                    </OtherAction>
                 </FormBottom>
             </Form>
             <Picture></Picture>
@@ -123,13 +103,8 @@ const FormBottom = styled.div`
     width: 17rem;
 `
 
-const ActionsContainer = styled.div({
-  margin: '1rem 0 0 .6rem',
-  display: 'flex',
-  flexDirection: 'column'
-})
-
 const OtherAction = styled(Link)<{ loading: string }>`
+    margin: 0.7rem 0 0 0.6rem;
     color: ${props => (props.loading === 'true' ? '#cccccc' : 'black')};
     pointer-events: ${props => (props.loading === 'true' ? 'none' : 'all')};
     font-family: 'Inter';
@@ -145,4 +120,4 @@ const Picture = styled.div`
     z-index: 1;
 `
 
-export default withRouter(SignIn)
+export default withRouter(ForgotPassword)
