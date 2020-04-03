@@ -72,7 +72,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
                 />
                 <Note loading={`${loading}`}>
                     {error && error}
-                    {localStorage.getItem('defaultEmail') ? <p>{`Prosimy o aktywację konta poprzez link wysłany na ${localStorage.getItem('defaultEmail')}`}</p> : localStorage.getItem('verified') ? <p>Twoje konto zostało aktywowane.</p> : ''}
+                    {localStorage.getItem('defaultEmail') && !localStorage.getItem('verified') ? <p>{`Prosimy o aktywację konta poprzez link wysłany na ${localStorage.getItem('defaultEmail')}`}</p> : localStorage.getItem('verified') ? <p>Twoje konto zostało aktywowane.</p> : ''}
                 </Note>
                 <FormBottom>
                     <Button
