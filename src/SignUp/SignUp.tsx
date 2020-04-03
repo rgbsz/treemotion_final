@@ -6,6 +6,7 @@ import { RouteComponentProps, withRouter, Link, useHistory } from 'react-router-
 import TextField from './components/TextField'
 import Select from './components/Select'
 import Button from './components/Button'
+import Radio from '../global/components/Radio'
 import Image from './img/sign_in.jpg'
 
 const SignUp: React.FC<RouteComponentProps> = () => {
@@ -22,37 +23,43 @@ const SignUp: React.FC<RouteComponentProps> = () => {
     const [password, setPassword] = useState('')
     const [repeatPassword, setRepeatPassword] = useState('')
     const [city, setCity] = useState<number | null>(null)
+    const [regulationsAccepted, setRegulationsAccepted] = useState<boolean>(false)
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState<any>(false)
     async function SignUp(e: any) {
-        try {
-            e.preventDefault()
-            setLoading(true)
-            const query = await fetch(
-                'https://treemotion.herokuapp.com/user/signup',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        firstName: firstName,
-                        email: email,
-                        city: city,
-                        password: password,
-                        repeatPassword: repeatPassword,
-                    }),
-                    headers: { 'Content-type': 'application/json' },
-                },
-            )
-            const res = await query.json()
-            if (!res.success) {
-                console.log(res.error)
-                setErrors(res.error)
-                setLoading(false)
-            } else {
-                localStorage.setItem('defaultEmail', email)
-                history.push(`/sign-in`)
-            }
-        } catch(e) {
-            console.log(`Error: ${e.message}`)
+        e.preventDefault()
+        if(!regulationsAccepted) {
+          setErrors({ email: [], password: [], repeatPassword: [], city: [], regulations: 'Akceptacja regulaminu jest wymagana' })
+        }
+        else {
+          try {
+              setLoading(true)
+              const query = await fetch(
+                  'https://treemotion.herokuapp.com/user/signup',
+                  {
+                      method: 'POST',
+                      body: JSON.stringify({
+                          firstName: firstName,
+                          email: email,
+                          city: city,
+                          password: password,
+                          repeatPassword: repeatPassword,
+                      }),
+                      headers: { 'Content-type': 'application/json' },
+                  },
+              )
+              const res = await query.json()
+              if (!res.success) {
+                  console.log(res.error)
+                  setErrors(res.error)
+                  setLoading(false)
+              } else {
+                  localStorage.setItem('defaultEmail', email)
+                  history.push(`/sign-in`)
+              }
+          } catch(e) {
+              console.log(`Error: ${e.message}`)
+          }
         }
     }
     return (
@@ -91,7 +98,9 @@ const SignUp: React.FC<RouteComponentProps> = () => {
                     options={[{id: 0, name: 'Wybierz miasto'}, {id: 1, name: 'Rybnik'}, {id: 2, name: 'Gliwice'}, {id: 3, name: 'Zabrze'}]}
                     onInput={(e: number) => setCity(e)}
                 />
+                <Radio onClick={(e: boolean) => setRegulationsAccepted(e)}/>
                 <Errors loading={`${loading}`}>
+                    {errors && <p>{errors.regulations}</p>}
                     {errors && <p>{errors.firstName}</p>}
                     {errors && errors.email.map((error: string) => <p>{error}</p>)}
                     {errors && errors.password.map((error: string) => <p>{error}</p>)}
