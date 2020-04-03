@@ -54,7 +54,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
     return (
         <Container>
             <Helmet>
-                <title>TreeMotion - Login</title>
+                <title>Treemotion | Logowanie</title>
             </Helmet>
             <Form onSubmit={(e: any) => SignIn(e)}>
                 <TextField

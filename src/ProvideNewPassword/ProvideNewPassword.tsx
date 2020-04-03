@@ -51,7 +51,7 @@ const ProvideNewPassword: React.FC<RouteComponentProps> = () => {
     return (
         <Container>
             <Helmet>
-                <title>Treemotion - reset password</title>
+                <title>Treemotion | Resetowanie hasła</title>
             </Helmet>
             <Form onSubmit={(e: any) => saveChanges(e)}>
                 <TextField

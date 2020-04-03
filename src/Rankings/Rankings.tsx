@@ -26,7 +26,7 @@ const Rankings: React.FC<RouteComponentProps> = ({ match }) => {
         return (
             <Container>
             <Helmet>
-                <title>Treemotion | Rankings</title>
+                <title>Treemotion | Rankingi</title>
             </Helmet>
             <TopPanel/>
             <NavigationPanel/>

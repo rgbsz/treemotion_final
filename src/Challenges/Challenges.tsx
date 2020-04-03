@@ -64,7 +64,7 @@ const Challenges: React.FC<RouteComponentProps> = ({ match }) => {
         return (
             <Container>
             <Helmet>
-                <title>TreeMotion - Challenges</title>
+                <title>Treemotion | Wyzwania</title>
             </Helmet>
             <TopPanel/>
             <NavigationPanel/>
