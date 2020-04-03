@@ -4,12 +4,13 @@ import styled, { keyframes } from 'styled-components'
 export type ButtonProps = {
     text: string,
     loading: boolean,
-    className?: string
+    className?: string,
+    onClick?: any
 }
 
-const Button: React.FC<ButtonProps> = ({ text, loading, className }) => {
+const Button: React.FC<ButtonProps> = ({ text, loading, className, onClick }) => {
     return (
-        <Component className={className} loading={`${loading}`} disabled={loading}>
+        <Component className={className} loading={`${loading}`} disabled={loading} onClick={onClick}>
             <Text loading={`${loading}`}>{text}</Text>
             <Loader loading={`${loading}`}>
                 <div></div>
@@ -44,10 +45,10 @@ const Text = styled.span<{loading: string}>`
 `
 
 const LoaderAnimation = keyframes`
-    0% { 
-        transform: rotate(0deg); 
+    0% {
+        transform: rotate(0deg);
     }
-    100% { 
+    100% {
         transform: rotate(360deg);
     }
 `

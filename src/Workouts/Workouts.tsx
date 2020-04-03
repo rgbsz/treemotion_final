@@ -59,20 +59,27 @@ const Workouts: React.FC<RouteComponentProps> = ({ match }) => {
                 </Helmet>
                 <NavigationPanel/>
                 <TopPanel/>
-                <Content>
-                    <AllWorkouts>
-                        { workouts.map((item: any) => <WorkoutItem onClick={() => setWorkout(item)} active={workout && workout.id === item.id ? true : false}>Workout {item.id}</WorkoutItem>) }
-                    </AllWorkouts>
-                    <MapWrapper>
-                        <Map
-                            googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWHBcMGuZCg4WEhTKJTchBv3oxN11KoTo&v=3.exp&libraries=geometry"
-                            loadingElement={<div style={{ height: `50vh` }} />}
-                            containerElement={<div style={{ height: `50vh` }} />}
-                            mapElement={<div style={{ height: `50vh` }} />}
-                            workout={workout}
-                        />
-                    </MapWrapper>
-                </Content>
+                {
+                  workouts.length > 0 ?
+                  <Content>
+                      <AllWorkouts>
+                          { workouts.map((item: any) => <WorkoutItem onClick={() => setWorkout(item)} active={workout && workout.id === item.id ? true : false}>Workout {item.id}</WorkoutItem>) }
+                      </AllWorkouts>
+                      <MapWrapper>
+                          <Map
+                              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWHBcMGuZCg4WEhTKJTchBv3oxN11KoTo&v=3.exp&libraries=geometry"
+                              loadingElement={<div style={{ height: `50vh` }} />}
+                              containerElement={<div style={{ height: `50vh` }} />}
+                              mapElement={<div style={{ height: `50vh` }} />}
+                              workout={workout}
+                          />
+                      </MapWrapper>
+                  </Content>
+                  :
+                  <Content>
+                      Nie masz zadnych treningów mordo
+                  </Content>
+                }
             </Container>
         )
     }

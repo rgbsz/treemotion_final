@@ -9,7 +9,7 @@ import { fetchUsersRanking, fetchCitiesRanking } from './functions'
 import NavigationPanel from '../global/components/NavigationPanel'
 import TopPanel from '../global/components/TopPanel'
 
-const Rankings: React.FC<RouteComponentProps> = ({ match }) => {
+const Rankings: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
     const accessToken = useSelector((state: any) => state.accessToken)
     const user = useSelector((state: any) => state.user)
@@ -48,7 +48,6 @@ const Container = styled.div`
     padding: 6.4rem 1.4rem 1.4rem 7.5rem;
     box-sizing: border-box;
     position: relative;
-    overflow-y: scroll;
     z-index: 1;
     display: flex;
     justify-content: space-between;
@@ -60,6 +59,7 @@ const Container = styled.div`
 
 const Content = styled.div({
     width: 'calc(50% - .8rem)',
+    maxHeight: '100%',
     position: 'relative',
     borderRadius: '4px',
     overflowY: 'scroll',

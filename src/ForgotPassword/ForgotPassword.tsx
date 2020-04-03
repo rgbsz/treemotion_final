@@ -35,6 +35,7 @@ const ForgotPassword: React.FC<RouteComponentProps> = () => {
             if (!res.success) {
                 setError(`Nie znaleźliśmy konta z podanym adresem e-mail.`)
                 setLoading(false)
+                setSuccess(false)
             } else {
                 setError(false)
                 setSuccess(`Wysłaliśmy na Twój e-mail dalsze instrukcje dotyczące zmiany hasła.`)
@@ -58,10 +59,8 @@ const ForgotPassword: React.FC<RouteComponentProps> = () => {
                 />
                 <Error loading={`${loading}`}>
                     {error && error}
+                    <p>{success && success}</p>
                 </Error>
-                <Success loading={`${loading}`}>
-                    {success && success}
-                </Success>
                 <FormBottom>
                     <Button
                         text='Wyślij email'
@@ -111,14 +110,9 @@ const Error = styled.span<{ loading: string }>`
     margin-top: 1rem;
     font-size: 0.8rem;
     width: 17rem;
-`
-
-const Success = styled.span<{ loading: string }>`
-    color: ${props => (props.loading === 'true' ? '#cccccc' : 'green')};
-    font-family: 'Inter';
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    width: 17rem;
+    p {
+      color: ${props => (props.loading === 'true' ? '#cccccc' : 'black')};
+    }
 `
 
 const FormBottom = styled.div`
