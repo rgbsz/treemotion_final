@@ -1,9 +1,5 @@
-import store from '../store'
-import { setWorkouts } from '../redux/actions'
-
 export const fetchVerification = async (id: string | undefined) => {
     console.log('Fetching verification...')
-    console.log(id)
     try {
         const query = await fetch(
             'https://treemotion.herokuapp.com/user/verify',

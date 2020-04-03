@@ -1,17 +1,24 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Helmet } from 'react-helmet'
-import { RouteComponentProps, withRouter, Link, useHistory } from 'react-router-dom'
+import { RouteComponentProps, withRouter, Link } from 'react-router-dom'
 
 import TextField from './components/TextField'
 import Button from './components/Button'
 import Image from './img/sign_in.jpg'
 
-const ForgotPassword: React.FC<RouteComponentProps> = ({ match }) => {
-    let history = useHistory()
+const ForgotPassword: React.FC<RouteComponentProps> = () => {
+    const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość']
+    const [slide, setSlide] = useState(1)
+    setTimeout(() => {
+      if(slide !== 6) {
+        setSlide(slide + 1)
+      }
+    }, 2500)
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | boolean>(false)
+    const [success, setSuccess] = useState<string | boolean>(false)
     async function fetchForgotPassword(e: any) {
         try {
             e.preventDefault()
@@ -26,10 +33,11 @@ const ForgotPassword: React.FC<RouteComponentProps> = ({ match }) => {
             )
             const res = await query.json()
             if (!res.success) {
-                setError(`There's no account with provided email address.`)
+                setError(`Nie znaleźliśmy konta z podanym adresem e-mail.`)
                 setLoading(false)
             } else {
-                setError(`Please check your email for further instructions.`)
+                setError(false)
+                setSuccess(`Wysłaliśmy na Twój e-mail dalsze instrukcje dotyczące zmiany hasła.`)
                 setLoading(false)
             }
         } catch(e) {
@@ -39,33 +47,42 @@ const ForgotPassword: React.FC<RouteComponentProps> = ({ match }) => {
     return (
         <Container>
             <Helmet>
-                <title>Treemotion - reset password</title>
+                <title>Treemotion | Resetowanie hasła</title>
             </Helmet>
             <Form onSubmit={(e: any) => fetchForgotPassword(e)}>
                 <TextField
                     type="text"
-                    placeholder='E-mail address'
+                    placeholder='Adres e-mail'
                     onInput={(e: string) => setEmail(e)}
                     processing={loading}
-                    defaultValue={localStorage.getItem('defaultEmail') ? `${localStorage.getItem('defaultEmail')}` : ''}
                 />
                 <Error loading={`${loading}`}>
                     {error && error}
                 </Error>
+                <Success loading={`${loading}`}>
+                    {success && success}
+                </Success>
                 <FormBottom>
                     <Button
-                        text='Send email'
+                        text='Wyślij email'
                         loading={loading}
                     />
                     <OtherAction
                         to={`/sign-in`}
                         loading={`${loading}`}
                     >
-                        Go back
+                        Wróć
                     </OtherAction>
                 </FormBottom>
             </Form>
-            <Picture></Picture>
+            <Picture slide={slide}>
+              <h1>Treemotion</h1>
+              <div>
+                <div>
+                  {texts.map(text => <span>{text}</span>)}
+                </div>
+              </div>
+            </Picture>
         </Container>
     )
 }
@@ -96,6 +113,14 @@ const Error = styled.span<{ loading: string }>`
     width: 17rem;
 `
 
+const Success = styled.span<{ loading: string }>`
+    color: ${props => (props.loading === 'true' ? '#cccccc' : 'green')};
+    font-family: 'Inter';
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    width: 17rem;
+`
+
 const FormBottom = styled.div`
     display: flex;
     align-items: center;
@@ -112,12 +137,50 @@ const OtherAction = styled(Link)<{ loading: string }>`
     transition: 0.2s;
 `
 
-const Picture = styled.div`
+const Picture = styled.div<{ slide: number }>`
     width: 100%;
     height: 100%;
     background: url(${Image}) center;
     background-size: cover;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    h1 {
+      color: #f2f2f2;
+      text-shadow: 0 0 1rem rgba(0,0,0,.6);
+      font-size: 6rem;
+    }
+    div {
+      color: #f2f2f2;
+      text-shadow: 0 0 1rem rgba(0,0,0,.6);
+      font-size: 2rem;
+      position: relative;
+      height: 5rem;
+      width: 40rem;
+      overflow: hidden;
+      div {
+        position: absolute;
+        top: -${props => props.slide * 5}rem;
+        left: 0;
+        width: 100%;
+        height: 40rem;
+        transition: .6s ease-in-out;
+        span {
+          display: block;
+          text-align: center;
+          height: 5rem;
+          line-height: 5rem;
+          transition: .3s;
+          opacity: 0;
+          &:nth-of-type(${props => props.slide + 1}) {
+            transition: .3s .3s;
+            opacity: 1;
+          }
+        }
+      }
+    }
 `
 
 export default withRouter(ForgotPassword)

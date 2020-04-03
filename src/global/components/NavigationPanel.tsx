@@ -18,23 +18,23 @@ const NavigationPanel: React.FC = () => {
                 <Separator/>
                 <Button to='/workouts'>
                     <WorkoutsIcon/>
-                    <ButtonText>Workouts</ButtonText>
+                    <ButtonText>Treningi</ButtonText>
                 </Button>
                 <Button to='/challenges'>
                     <ChallengesIcon/>
-                    <ButtonText>Challenges</ButtonText>
+                    <ButtonText>Wyzwania</ButtonText>
                 </Button>
                 <Button to='/rankings'>
                     <RankingsIcon/>
-                    <ButtonText>Rankings</ButtonText>
+                    <ButtonText>Rankingi</ButtonText>
                 </Button>
                 <Button to='/settings'>
                     <SettingsIcon/>
-                    <ButtonText>Settings</ButtonText>
+                    <ButtonText>Ustawienia</ButtonText>
                 </Button>
                 <SignOut onClick={() => { localStorage.removeItem('refreshToken'); history.push('/sign-in'); removeRedux() }}>
                     <SignOutIcon/>
-                    <ButtonText>SignOut</ButtonText>
+                    <ButtonText>Wyloguj się</ButtonText>
                 </SignOut>
             </Container>
         </Component>
@@ -63,8 +63,7 @@ const Container = styled.div({
 })
 
 const Brand = styled.h1({
-    fontFamily: 'Raleway',
-    fontWeight: 900,
+    fontWeight: 700,
     fontSize: '1.8rem',
     textAlign: 'center',
     background: '-webkit-linear-gradient(30deg, #146D52 0%, #08313E 120%)',
@@ -99,9 +98,8 @@ const Separator = styled.span`
 `
 
 const Button = styled(Link)<{active?: boolean}>`
-    font-family: Raleway;
     font-size: 1.2rem;
-    font-weight: bold;
+    // font-weight: bold;
     color: ${props => props.active ? '#146D52' : '#BCBCBC'};
     display: flex;
     padding: 1rem;
@@ -137,9 +135,7 @@ const ButtonText = styled.span`
 
 const SignOut = styled.button`
     border: none;
-    font-family: Raleway;
     font-size: 1.2rem;
-    font-weight: bold;
     color: #B3B3B3;
     display: block;
     padding: 1rem 3rem 1rem 1rem;

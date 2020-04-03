@@ -1,21 +1,32 @@
 import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet'
 import { RouteComponentProps, withRouter, useParams, useHistory } from 'react-router-dom'
-import styled from 'styled-components'
 import LoadingScreen from '../global/components/LoadingScreen'
 import { fetchVerification } from './functions'
 
-const Verify: React.FC<RouteComponentProps> = ({ match }) => {
+const Verify: React.FC<RouteComponentProps> = () => {
     const history = useHistory()
     const { id } = useParams()
     useEffect(() => {
       async function fetch() {
         const res = await fetchVerification(id)
-        if(res) history.push('/sign-in')
+        if(res) {
+          if(res.success) localStorage.setItem('verified', 'true')
+          history.push('/sign-in')
+        }
       }
-      fetch()
+      setTimeout(() => {
+        fetch()
+      }, 1500)
     }, [])
-    return <LoadingScreen />
+    return (
+      <>
+        <Helmet>
+          <title>Treemotion | Weryfikacja konta</title>
+        </Helmet>
+        <LoadingScreen />
+      </>
+    )
 }
 
 export default withRouter(Verify)

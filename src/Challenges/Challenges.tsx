@@ -69,21 +69,21 @@ const Challenges: React.FC<RouteComponentProps> = ({ match }) => {
             <TopPanel/>
             <NavigationPanel/>
             {
-                user.isAdmin ? 
+                user.isAdmin ?
             <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleAddChallenge(e)}>
                 <Select
-                    placeholder='Challenge type'
+                    placeholder='Typ wyzwania'
                     loading={loading}
-                    options={[{id: 0, name: 'Wybierz typ wyzwania'}, {id: 1, name: 'Distance'}]}
+                    options={[{id: 0, name: 'Wybierz typ wyzwania'}, {id: 1, name: 'Dystansowe'}]}
                     onInput={(e: number) => setChallengeType(e)}
                 />
                 {
-                    challengeType === 1 ? 
+                    challengeType === 1 ?
                     <>
-                        <TextField type='text' placeholder='Challenge name' onInput={(e: string) => setChallengeName(e)} processing={loading}/>
-                        <TextField type='text' placeholder='Distance for gold' onInput={(e: string) => setDistance(e)} processing={loading}/>
+                        <TextField type='text' placeholder='Nazwa wyzwania' onInput={(e: string) => setChallengeName(e)} processing={loading}/>
+                        <TextField type='text' placeholder='Dystans na złoto' onInput={(e: string) => setDistance(e)} processing={loading}/>
                         <Button
-                            text='Add challenge'
+                            text='Dodaj wyzwanie'
                             loading={loading}
                         />
                     </>

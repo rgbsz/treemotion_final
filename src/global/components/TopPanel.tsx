@@ -10,13 +10,15 @@ const TopPanel: React.FC = () => {
     const name = useSelector((state: any) => state.user.name)
     return (
         <Component>
-            <Hello>Hello <HelloBold>{name}</HelloBold></Hello>
-            <StyledTextField className='StyledTextField' type='text' placeholder='Search' onInput={() => console.log('Search')} processing={false}/>
+            <Hello>Cześć <HelloBold>{name}</HelloBold></Hello>
+            <StyledTextField className='StyledTextField' type='text' placeholder='Szukaj' onInput={() => console.log('Search')} processing={false}/>
             <TopRight>
                 <NotificationIcon/>
-                <LanguageIcon/>
-                <span>English</span>
-                <DownArrowIcon/>
+                <div>
+                  <LanguageIcon/>
+                  <span>Polski</span>
+                  <DownArrowIcon/>
+                </div>
             </TopRight>
         </Component>
     )
@@ -38,7 +40,6 @@ const Component = styled.div({
 })
 
 const Hello = styled.span`
-    font-family: 'Raleway';
     font-size: 1.8rem;
     margin-left: 6.5rem;
     display: inline-block;
@@ -76,19 +77,45 @@ const TopRight = styled.div`
         height: 1.5rem;
         fill: black;
         margin-right: .4rem;
-        &:first-child {
-            margin-right: 1rem;
-        }
         &:last-child {
-            margin: 0 0 0 .4rem;
-            width: 1rem;
-            height: 1rem;
+          width: 1.2rem;
+          height: 1.2rem;
+          margin-left: .4rem;
         }
     }
-    span {
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: .8rem;
         font-size: 1rem;
-        font-family: Raleway;
-        font-weight: 500;
+        position: relative;
+        &:hover {
+          cursor: pointer;
+        }
+        &:hover::after {
+          opacity: 1;
+          filter: blur(0)
+          visibility: visible;
+          pointer-events: default;
+        }
+        &::after {
+          opacity: 0;
+          filter: blur(.3rem)
+          visibility: hidden;
+          transition: .2s;
+          padding: 1rem;
+          border-radius: 4px;
+          box-shadow: 0 0 1rem rgba(0,0,0,.15);
+          pointer-events: none;
+          position: absolute;
+          top: -.9rem;
+          left: -13rem;
+          content: 'Pracujemy nad tym :)';
+          whitespace: nowrap;
+          text-align: center;
+          background: white;
+        }
     }
 `
 

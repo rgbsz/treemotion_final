@@ -8,7 +8,7 @@ import Select from './components/Select'
 import Button from './components/Button'
 import Image from './img/sign_in.jpg'
 
-const SignUp: React.FC<RouteComponentProps> = ({ match }) => {
+const SignUp: React.FC<RouteComponentProps> = () => {
     let history = useHistory()
     const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość']
     const [slide, setSlide] = useState(1)
@@ -23,6 +23,7 @@ const SignUp: React.FC<RouteComponentProps> = ({ match }) => {
     const [repeatPassword, setRepeatPassword] = useState('')
     const [city, setCity] = useState<number | null>(null)
     const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState<any>(false)
     async function SignUp(e: any) {
         try {
             e.preventDefault()
@@ -43,7 +44,8 @@ const SignUp: React.FC<RouteComponentProps> = ({ match }) => {
             )
             const res = await query.json()
             if (!res.success) {
-                alert('błąd')
+                console.log(res.error)
+                setErrors(res.error)
                 setLoading(false)
             } else {
                 localStorage.setItem('defaultEmail', email)
@@ -61,47 +63,51 @@ const SignUp: React.FC<RouteComponentProps> = ({ match }) => {
             <Form onSubmit={(e: any) => SignUp(e)}>
                 <TextField
                     type="text"
-                    placeholder='First name'
+                    placeholder='Imię'
                     onInput={(e: string) => setFirstName(e)}
                     processing={loading}
                 />
                 <TextField
                     type="text"
-                    placeholder='E-mail address'
+                    placeholder='Adres e-mail'
                     onInput={(e: string) => setEmail(e)}
                     processing={loading}
                 />
                 <TextField
                     type="password"
-                    placeholder='Password'
+                    placeholder='Hasło'
                     onInput={(e: string) => setPassword(e)}
                     processing={loading}
                 />
                 <TextField
                     type="password"
-                    placeholder='Confirm password'
+                    placeholder='Powtórz hasło'
                     onInput={(e: string) => setRepeatPassword(e)}
                     processing={loading}
                 />
                 <Select
-                    placeholder="City"
+                    placeholder="Miasto"
                     loading={loading}
                     options={[{id: 0, name: 'Wybierz miasto'}, {id: 1, name: 'Rybnik'}, {id: 2, name: 'Gliwice'}, {id: 3, name: 'Zabrze'}]}
                     onInput={(e: number) => setCity(e)}
                 />
                 <Errors loading={`${loading}`}>
-
+                    {errors && <p>{errors.firstName}</p>}
+                    {errors && errors.email.map((error: string) => <p>{error}</p>)}
+                    {errors && errors.password.map((error: string) => <p>{error}</p>)}
+                    {errors && errors.repeatPassword.map((error: string) => <p>{error}</p>)}
+                    {errors && errors.city.map((error: string) => <p>{error}</p>)}
                 </Errors>
                 <FormBottom>
                     <Button
-                        text='Register'
+                        text='Utwórz konto'
                         loading={loading}
                     />
                     <OtherAction
                         to={`/sign-in`}
                         loading={`${loading}`}
                     >
-                        I already have an account
+                        Mam już konto
                     </OtherAction>
                 </FormBottom>
             </Form>

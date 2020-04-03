@@ -7,8 +7,15 @@ import TextField from './components/TextField'
 import Button from './components/Button'
 import Image from './img/sign_in.jpg'
 
-const ProvideNewPassword: React.FC<RouteComponentProps> = ({ match }) => {
+const ProvideNewPassword: React.FC<RouteComponentProps> = () => {
     let history = useHistory()
+    const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość']
+    const [slide, setSlide] = useState(1)
+    setTimeout(() => {
+      if(slide !== 6) {
+        setSlide(slide + 1)
+      }
+    }, 2500)
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -75,7 +82,14 @@ const ProvideNewPassword: React.FC<RouteComponentProps> = ({ match }) => {
                     </OtherAction>
                 </FormBottom>
             </Form>
-            <Picture></Picture>
+            <Picture slide={slide}>
+              <h1>Treemotion</h1>
+              <div>
+                <div>
+                  {texts.map(text => <span>{text}</span>)}
+                </div>
+              </div>
+            </Picture>
         </Container>
     )
 }
@@ -122,12 +136,50 @@ const OtherAction = styled(Link)<{ loading: string }>`
     transition: 0.2s;
 `
 
-const Picture = styled.div`
+const Picture = styled.div<{ slide: number }>`
     width: 100%;
     height: 100%;
     background: url(${Image}) center;
     background-size: cover;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    h1 {
+      color: #f2f2f2;
+      text-shadow: 0 0 1rem rgba(0,0,0,.6);
+      font-size: 6rem;
+    }
+    div {
+      color: #f2f2f2;
+      text-shadow: 0 0 1rem rgba(0,0,0,.6);
+      font-size: 2rem;
+      position: relative;
+      height: 5rem;
+      width: 40rem;
+      overflow: hidden;
+      div {
+        position: absolute;
+        top: -${props => props.slide * 5}rem;
+        left: 0;
+        width: 100%;
+        height: 40rem;
+        transition: .6s ease-in-out;
+        span {
+          display: block;
+          text-align: center;
+          height: 5rem;
+          line-height: 5rem;
+          transition: .3s;
+          opacity: 0;
+          &:nth-of-type(${props => props.slide + 1}) {
+            transition: .3s .3s;
+            opacity: 1;
+          }
+        }
+      }
+    }
 `
 
 export default withRouter(ProvideNewPassword)

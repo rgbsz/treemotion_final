@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 import { Helmet } from 'react-helmet'
 import { RouteComponentProps, withRouter, Link, useHistory } from 'react-router-dom'
 
@@ -12,7 +12,7 @@ import { setAccessToken } from '../redux/actions'
 const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
     let history = useHistory()
     const dispatch = useDispatch()
-    const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość']
+    const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość.', 'Wybiegaj swoją przyszłość']
     const [slide, setSlide] = useState(1)
     setTimeout(() => {
       if(slide !== 6) {
@@ -22,8 +22,10 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
     const [email, setEmail] = useState(localStorage.getItem('defaultEmail') ? localStorage.getItem('defaultEmail') : '')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState<boolean | string>(false)
     async function SignIn(e: any) {
+        if(localStorage.getItem('defaultEmail')) localStorage.removeItem('defaultEmail')
+        if(localStorage.getItem('verified')) localStorage.removeItem('verified')
         try {
             e.preventDefault()
             setLoading(true)
@@ -37,10 +39,10 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
             )
             const res = await query.json()
             if (!res.success) {
-                setError(true)
+                console.log(res)
+                setError(res.error)
                 setLoading(false)
             } else {
-                if(localStorage.getItem('defaultEmail')) localStorage.removeItem('defaultEmail')
                 dispatch(setAccessToken(res.accessToken))
                 localStorage.setItem('refreshToken', res.refreshToken)
                 history.push(`/sign-up`)
@@ -57,23 +59,24 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
             <Form onSubmit={(e: any) => SignIn(e)}>
                 <TextField
                     type="text"
-                    placeholder='E-mail address'
+                    placeholder='Adres e-mail'
                     onInput={(e: string) => setEmail(e)}
                     processing={loading}
                     defaultValue={localStorage.getItem('defaultEmail') ? `${localStorage.getItem('defaultEmail')}` : ''}
                 />
                 <TextField
                     type="password"
-                    placeholder='Password'
+                    placeholder='Hasło'
                     onInput={(e: string) => setPassword(e)}
                     processing={loading}
                 />
-                <Error loading={`${loading}`}>
-                    {error && 'Wrong email or password.'}
-                </Error>
+                <Note loading={`${loading}`}>
+                    {error && error}
+                    {localStorage.getItem('defaultEmail') ? <p>{`Prosimy o aktywację konta poprzez link wysłany na ${localStorage.getItem('defaultEmail')}`}</p> : localStorage.getItem('verified') ? <p>Twoje konto zostało aktywowane.</p> : ''}
+                </Note>
                 <FormBottom>
                     <Button
-                        text='Login'
+                        text='Zaloguj'
                         loading={loading}
                     />
                     <ActionsContainer>
@@ -81,13 +84,13 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
                           to={`/forgotten-password`}
                           loading={`${loading}`}
                       >
-                          I forgot my password
+                          Zapomniałem hasła
                       </OtherAction>
                       <OtherAction
                           to={`/sign-up`}
                           loading={`${loading}`}
                       >
-                          I don't have account
+                          Nie mam konta
                       </OtherAction>
                     </ActionsContainer>
                 </FormBottom>
@@ -96,7 +99,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
               <h1>Treemotion</h1>
               <div>
                 <div>
-                  {texts.map(text => <span>{text}</span>)}
+                  {texts.map((text, i) => <span>{text}</span>)}
                 </div>
               </div>
             </Picture>
@@ -122,8 +125,13 @@ const Form = styled.form`
     z-index: 2;
 `
 
-const Error = styled.span<{ loading: string }>`
+const Note = styled.span<{ loading: string }>`
+    text-align: center;
     color: ${props => (props.loading === 'true' ? '#cccccc' : 'red')};
+    p {
+      margin-top: .5rem;
+      color: black;
+    }
     font-family: 'Inter';
     margin-top: 1rem;
     font-size: 0.8rem;
