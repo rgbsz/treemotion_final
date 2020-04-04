@@ -11,7 +11,7 @@ const Radio: React.FC<RadioProps> = ({ onClick }) => {
     return (
         <Wrapper>
           <RadioComponent active={active} onClick={() => {onClick(!active); setActive(!active)}}/>
-          <Label active={active}><Clickable active={active} onClick={() => {onClick(!active); setActive(!active)}}>Akceptuję</Clickable> <RegulationsLink to='/sign-in' active={active}>regulamin</RegulationsLink></Label>
+          <Label active={active}><Clickable active={active} onClick={() => {onClick(!active); setActive(!active)}}>Akceptuję</Clickable> <RegulationsLink to='/privacy-policy' active={active}>politykę prywatności</RegulationsLink></Label>
         </Wrapper>
     )
 }
