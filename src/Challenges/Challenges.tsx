@@ -29,8 +29,6 @@ const Challenges: React.FC<RouteComponentProps> = () => {
     const user = useSelector((state: any) => state.user)
     const challenges = useSelector((state: any) => state.challenges)
     const dispatch = useDispatch()
-    const [exist, setExist] = useState<boolean>(false)
-    const [futureChallenges, setFutureChallenges] = useState<any>(null)
     const [joinChallengeData, setJoinChallengeData] = useState<any>(null)
     const [joinChallengeModalActive, setJoinChallengeModalActive] = useState<boolean>(false)
     useEffect(() => {
@@ -38,7 +36,7 @@ const Challenges: React.FC<RouteComponentProps> = () => {
         else if(!user) fetchUser(accessToken)
         else if(!challenges) fetchChallenges(accessToken)
         else setRequest(true)
-    }, [accessToken, challenges, user, futureChallenges])
+    }, [accessToken, challenges, user])
 
     const [joinChallengeRequest, setJoinChallengeRequest] = useState<boolean>(false)
     async function handleJoinChallenge(e: any) {
@@ -60,10 +58,8 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             )
             const res = await query.json()
             if (res.success) {
-              if(!challenges.currentChallenge) dispatch(setChallenges(challenges.allChallenges, { ...joinChallengeData }, challenges.futureChallenges))
+              if(!challenges.currentChallenge) dispatch(setChallenges(challenges.allChallenges, { challenge: {...joinChallengeData} }, challenges.futureChallenges))
               else {
-                alert('xd')
-                console.log([{...joinChallengeData}, ...challenges.futureChallenges])
                 dispatch(setChallenges(challenges.allChallenges, {challenge: challenges.currentChallenge}, [{...joinChallengeData},...challenges.futureChallenges]))
               }
             }
@@ -152,35 +148,96 @@ const Challenges: React.FC<RouteComponentProps> = () => {
                     ))
                 }
                 {
-                    challenges.allChallenges.map((challenge: any, i: number) => {
-                        if(!challenges.futureChallenges.some((futureChallenge: any) => futureChallenge.id === challenge.id) && challenges.currentChallenge ? challenges.currentChallenge.id !== challenge.id : '') {
-                            return (
-                              <ContentItem key={i} locked={true}>
-                                <Locked onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
-                                  <span>
-                                    Kliknij, aby dołączyć do wyzwania
-                                  </span>
-                                </Locked>
-                                <h1>{challenge.name}</h1>
-                                <Bar>
-                                  <ProgressBar locked={null}/>
-                                  <Part>
-                                    <BronzeIcon/>
-                                    <Score>{challenge.bronzeMedalDistance} km</Score>
-                                  </Part>
-                                  <Part>
-                                    <SilverIcon/>
-                                    <Score>{challenge.silverMedalDistance} km</Score>
-                                  </Part>
-                                  <Part>
-                                    <GoldIcon/>
-                                    <Score>{challenge.distance} km</Score>
-                                  </Part>
-                                </Bar>
-                              </ContentItem>
-                            )
-                        }
-                    })
+                    !challenges.currentChallenge && challenges.futureChallenges.length === 0 ?
+                       challenges.allChallenges.map((challenge: any, i: number) => (
+                         <ContentItem key={i} locked={true}>
+                           <Locked onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
+                             <span>
+                               Kliknij, aby dołączyć do wyzwania
+                             </span>
+                           </Locked>
+                           <h1>{challenge.name}</h1>
+                           <Bar>
+                             <ProgressBar locked={null}/>
+                             <Part>
+                               <BronzeIcon/>
+                               <Score>{challenge.bronzeMedalDistance} km</Score>
+                             </Part>
+                             <Part>
+                               <SilverIcon/>
+                               <Score>{challenge.silverMedalDistance} km</Score>
+                             </Part>
+                             <Part>
+                               <GoldIcon/>
+                               <Score>{challenge.distance} km</Score>
+                             </Part>
+                           </Bar>
+                         </ContentItem>
+                       ))
+                     :
+                       challenges.currentChallenge && challenges.futureChallenges.length === 0 ?
+                         challenges.allChallenges.map((challenge: any, i: number) => {
+                           if(challenge.id !== challenges.currentChallenge.id) {
+                             return (
+                               <ContentItem key={i} locked={true}>
+                                 <Locked onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
+                                   <span>
+                                     Kliknij, aby dołączyć do wyzwania
+                                   </span>
+                                 </Locked>
+                                 <h1>{challenge.name}</h1>
+                                 <Bar>
+                                   <ProgressBar locked={null}/>
+                                   <Part>
+                                     <BronzeIcon/>
+                                     <Score>{challenge.bronzeMedalDistance} km</Score>
+                                   </Part>
+                                   <Part>
+                                     <SilverIcon/>
+                                     <Score>{challenge.silverMedalDistance} km</Score>
+                                   </Part>
+                                   <Part>
+                                     <GoldIcon/>
+                                     <Score>{challenge.distance} km</Score>
+                                   </Part>
+                                 </Bar>
+                               </ContentItem>
+                             )
+                           }
+                         })
+                       :
+                         challenges.currentChallenge && challenges.futureChallenges.length > 0 ?
+                         challenges.allChallenges.map((challenge: any, i: number) => {
+                           if(!challenges.futureChallenges.some((futureChallenge: any) => futureChallenge.id === challenge.id) && challenges.currentChallenge ? challenges.currentChallenge.id !== challenge.id : '') {
+                             return (
+                               <ContentItem key={i} locked={true}>
+                                 <Locked onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
+                                   <span>
+                                     Kliknij, aby dołączyć do wyzwania
+                                   </span>
+                                 </Locked>
+                                 <h1>{challenge.name}</h1>
+                                 <Bar>
+                                   <ProgressBar locked={null}/>
+                                   <Part>
+                                     <BronzeIcon/>
+                                     <Score>{challenge.bronzeMedalDistance} km</Score>
+                                   </Part>
+                                   <Part>
+                                     <SilverIcon/>
+                                     <Score>{challenge.silverMedalDistance} km</Score>
+                                   </Part>
+                                   <Part>
+                                     <GoldIcon/>
+                                     <Score>{challenge.distance} km</Score>
+                                   </Part>
+                                 </Bar>
+                               </ContentItem>
+                             )
+                           }
+                         })
+                         :
+                         ''
                 }
             </Content>
         </Container>
