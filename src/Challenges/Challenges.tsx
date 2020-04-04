@@ -135,8 +135,8 @@ const Challenges: React.FC<RouteComponentProps> = () => {
                     </Part>
                   </Bar>
                 </ContentItem>
-                {challenges.map((challenge: any) => (
-                  <ContentItem locked={true}>
+                {challenges.map((challenge: any, i: number) => (
+                  <ContentItem key={i} locked={true}>
                     <Locked>
                       <span>
                         Kliknij, aby dołączyć do wyzwania

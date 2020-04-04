@@ -7,6 +7,7 @@ import Workouts from './Workouts/Workouts'
 import Challenges from './Challenges/Challenges'
 import Rankings from './Rankings/Rankings';
 import Settings from './Settings/Settings';
+import AdminPanel from './AdminPanel/AdminPanel';
 import Verify from './Verify/Verify'
 import ForgotPassword from './ForgotPassword/ForgotPassword'
 import ProvideNewPassword from './ProvideNewPassword/ProvideNewPassword'
@@ -63,6 +64,7 @@ function Application() {
           <AuthenticatedRoute path="/challenges" render={() => <Challenges/>} />
           <AuthenticatedRoute path="/rankings" render={() => <Rankings/>} />
           <AuthenticatedRoute path="/settings" render={() => <Settings/>} />
+          <AuthenticatedRoute path="/admin" render={() => <AdminPanel/>} />
           <Route render={() => <Redirect to='/workouts'/>}/>
         </Switch>
       </Router>

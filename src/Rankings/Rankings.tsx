@@ -15,6 +15,7 @@ const Rankings: React.FC<RouteComponentProps> = () => {
     const user = useSelector((state: any) => state.user)
     const usersRanking = useSelector((state: any) => state.usersRanking)
     const citiesRanking = useSelector((state: any) => state.citiesRanking)
+    console.log(usersRanking)
     useEffect(() => {
         if(!accessToken) fetchAccessToken()
         else if(!user) fetchUser(accessToken)
@@ -31,10 +32,10 @@ const Rankings: React.FC<RouteComponentProps> = () => {
             <TopPanel/>
             <NavigationPanel/>
             <Content>
-                {usersRanking.map((user: any, i: number) => <ContentItem key={user.id}>{i+1}. {user.firstName}</ContentItem>)}
+                {usersRanking.map((el: any, i: number) => el.email === user.email ? <ContentItem key={el.id}>Ja</ContentItem> : <ContentItem key={el.id}>{i+1}. {el.firstName}</ContentItem>)}
             </Content>
             <Content>
-                {citiesRanking.map((city: any, i: number) => <ContentItem key={city.id}>{i+1}. {city.name}</ContentItem>)}
+                {citiesRanking.map((el: any, i: number) => <ContentItem key={el.id}>{i+1}. {el.name}</ContentItem>)}
             </Content>
         </Container>
         )

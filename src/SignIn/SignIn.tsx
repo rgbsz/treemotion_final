@@ -99,7 +99,7 @@ const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
               <h1>Treemotion</h1>
               <div>
                 <div>
-                  {texts.map((text, i) => <span>{text}</span>)}
+                  {texts.map((text, i) => <span key={i}>{text}</span>)}
                 </div>
               </div>
             </Picture>
