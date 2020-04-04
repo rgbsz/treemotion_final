@@ -6,6 +6,7 @@ import SignUp from './SignUp/SignUp'
 import Workouts from './Workouts/Workouts'
 import Challenges from './Challenges/Challenges'
 import Rankings from './Rankings/Rankings';
+import Regulations from './Regulations/Regulations';
 import Settings from './Settings/Settings';
 import AdminPanel from './AdminPanel/AdminPanel';
 import Verify from './Verify/Verify'
@@ -65,6 +66,7 @@ function Application() {
           <AuthenticatedRoute path="/rankings" render={() => <Rankings/>} />
           <AuthenticatedRoute path="/settings" render={() => <Settings/>} />
           <AuthenticatedRoute path="/admin" render={() => <AdminPanel/>} />
+          <Route path='/privacy-policy' component={Regulations}/>
           <Route render={() => <Redirect to='/workouts'/>}/>
         </Switch>
       </Router>
