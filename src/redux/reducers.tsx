@@ -42,7 +42,12 @@ const workouts = (state = null, action: any) => {
 const challenges = (state = null, action: any) => {
     switch(action.type) {
         case 'SET_CHALLENGES':
-            return action.payload.challenges
+            return {
+              state,
+              allChallenges: action.payload.challenges,
+              currentChallenge: action.payload.currentChallenge ? action.payload.currentChallenge.challenge : null,
+              futureChallenges: action.payload.futureChallenges
+            }
         case 'DELETE_CHALLENGES':
             return null
         default:

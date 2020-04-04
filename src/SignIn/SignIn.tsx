@@ -9,7 +9,7 @@ import Image from './img/sign_in.jpg'
 import { useDispatch } from 'react-redux'
 import { setAccessToken } from '../redux/actions'
 
-const SignIn: React.FC<RouteComponentProps> = ({ match }) => {
+const SignIn: React.FC<RouteComponentProps> = () => {
     let history = useHistory()
     const dispatch = useDispatch()
     const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość.', 'Wybiegaj swoją przyszłość']

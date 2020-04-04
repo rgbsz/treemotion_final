@@ -29,7 +29,7 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
           history.push('/sign-in');
           removeRedux()
         }
-        else if(!challenges) fetchChallenges()
+        else if(!challenges) fetchChallenges(accessToken)
         else setRequest(true)
     }, [accessToken, user, challenges])
 
@@ -60,7 +60,7 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
                 alert('Błąd')
             }
             else {
-                dispatch(setChallenges([res.challenge, ...challenges]))
+                dispatch(setChallenges([res.challenge, ...challenges.allChallenges], challenges.currentChallenge, challenges.futureChallenges))
                 setAddChallengeModal(false)
             }
         } catch(e) {
@@ -104,7 +104,7 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
                     <Challenges>
                         <Button text='Dodaj wyzwanie' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
                         <List>
-                            {challenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}</Challenge>)}
+                            {challenges.allChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}</Challenge>)}
                         </List>
                     </Challenges>
                 </Content>

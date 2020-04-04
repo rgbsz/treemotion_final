@@ -46,11 +46,20 @@ export const deleteWorkouts = () => {
     }
 }
 
-export const setChallenges = (challenges: any) => {
+type challengeTypes = {
+  id: number,
+  name: string,
+  distance: number,
+  userDistance?: number
+}
+
+export const setChallenges = (challenges: challengeTypes[], currentChallenge: null | Object, futureChallenges: challengeTypes[]) => {
     return {
         type: 'SET_CHALLENGES',
         payload: {
-            challenges
+            challenges,
+            currentChallenge,
+            futureChallenges
         }
     }
 }
