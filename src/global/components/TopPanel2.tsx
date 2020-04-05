@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import TextField from '../../SignIn/components/TextField'
 import NotificationIcon from '../img/NotificationIcon'
 import LanguageIcon from '../img/LanguageIcon'
 import DownArrowIcon from '../img/DownArrowIcon'
@@ -9,9 +10,8 @@ const TopPanel: React.FC = () => {
     const name = useSelector((state: any) => state.user.name)
     return (
         <Component>
-            <Hello>
-              Cześć<HelloBold>{name}</HelloBold>!
-            </Hello>
+            <Hello>Cześć <HelloBold>{name}</HelloBold></Hello>
+            <StyledTextField className='StyledTextField' type='text' placeholder='Szukaj' onInput={() => console.log('Search')} processing={false}/>
             <TopRight>
                 <NotificationIcon/>
                 <div>
@@ -25,10 +25,12 @@ const TopPanel: React.FC = () => {
 }
 
 const Component = styled.div({
-    gridColumn: '2/3',
-    gridRow: '1/2',
-    height: '3rem',
-    padding: '1rem 1.5rem',
+    boxSizing: 'border-box',
+    position: 'fixed',
+    width: '100vw',
+    top: '0',
+    left: '0',
+    padding: '1rem 1rem',
     boxShadow: '0 0 2rem rgba(0,0,0,.15)',
     background: 'white',
     zIndex: 99,
@@ -39,17 +41,31 @@ const Component = styled.div({
 
 const Hello = styled.span`
     font-size: 1.8rem;
-    display: flex;
-    align-items: center;
+    margin-left: 6.5rem;
+    display: inline-block;
+    @media screen and (min-width: 1024px) {
+        margin-left: 18.5rem;
+    }
     @media screen and (max-width: 840px) {
         display: none;
     }
 `
 
 const HelloBold = styled.span({
-    fontWeight: 900,
-    marginLeft: '.5rem'
+    fontWeight: 900
 })
+
+const StyledTextField = styled(TextField)`
+    margin: 0;
+    margin-right: 1rem;
+    width: 30rem;
+    @media screen and (max-width: 1280px) {
+        width: 20rem;
+    }
+    @media screen and (max-width: 840px) {
+        margin-left: 6.5rem;
+    }
+`
 
 const TopRight = styled.div`
     display: flex;

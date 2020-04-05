@@ -250,22 +250,20 @@ const Settings: React.FC<RouteComponentProps> = () => {
 const Container = styled.div`
     width: 100%;
     height: 100vh;
-    padding: 6.4rem 1.4rem 1.4rem 6.5rem;
-    box-sizing: border-box;
-    position: relative;
-    overflow-y: scroll;
-    z-index: 1;
-    @media screen and (min-width: 1024px) {
-        padding: 6.4rem 1rem 1.4rem 19.4rem;
-    }
+    display: grid;
+    grid-template-columns: 18rem auto;
+    grid-template-rows: 5rem auto;
 `
 
 const Content = styled.div({
     width: '100%',
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
-    gridTemplateRows: 'auto auto',
-    gridColumnGap: '1.5rem'
+    gridTemplateRows: 'min-content',
+    gridColumnGap: '1.5rem',
+    padding: '1.5rem',
+    boxSizing: 'border-box',
+    height: 'auto'
 })
 
 const Form = styled.form({

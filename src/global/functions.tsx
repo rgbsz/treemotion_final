@@ -29,6 +29,7 @@ export const fetchUser = async (accessToken: string) => {
             }
         )
         const res = await query.json()
+        console.log(res)
         store.dispatch(setUser(res.user.firstName, res.user.email, res.user.city, res.user.isAdmin))
     }
     catch(e) {

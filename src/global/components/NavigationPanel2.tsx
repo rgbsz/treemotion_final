@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useSelector } from 'react-redux'
 import { withRouter, useHistory, Link } from 'react-router-dom'
 import WorkoutsIcon from '../img/WorkoutsIcon'
 import ChallengesIcon from '../img/ChallengesIcon'
@@ -9,6 +10,7 @@ import SignOutIcon from '../img/SignOutIcon'
 import { removeRedux } from '../functions'
 
 const NavigationPanel: React.FC = () => {
+    const user = useSelector((state: any) => state.user)
     let history = useHistory()
     return (
         <Component>
@@ -32,10 +34,13 @@ const NavigationPanel: React.FC = () => {
                     <SettingsIcon/>
                     <ButtonText>Ustawienia</ButtonText>
                 </Button>
-                <Button to='/admin'>
-                    <SettingsIcon/>
-                    <ButtonText>Panel admina</ButtonText>
-                </Button>
+                {
+                  user.isAdmin &&
+                  <Button to='/admin'>
+                      <SettingsIcon/>
+                      <ButtonText>Panel admina</ButtonText>
+                  </Button>
+                }
                 <SignOut onClick={() => { localStorage.removeItem('refreshToken'); history.push('/sign-in'); removeRedux() }}>
                     <SignOutIcon/>
                     <ButtonText>Wyloguj się</ButtonText>
@@ -46,13 +51,19 @@ const NavigationPanel: React.FC = () => {
 }
 
 const Component = styled.div`
-    grid-column: 1/2;
-    grid-row: 1/3;
     box-sizing: border-box;
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
     padding: 1.5rem 1rem;
     box-shadow: 0 0 2rem rgba(0,0,0,.15);
     z-index: 100;
     background: white;
+    width: 6rem;
+    @media screen and (min-width: 1024px) {
+        width: 18rem;
+    }
 `
 
 const Container = styled.div({

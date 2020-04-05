@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import TextField from '../SignIn/components/TextField'
 import NotificationIcon from '../global/img/NotificationIcon'
 import LanguageIcon from '../global/img/LanguageIcon'
 import DownArrowIcon from '../global/img/DownArrowIcon'
@@ -10,8 +9,9 @@ const TopPanel: React.FC = () => {
     const name = useSelector((state: any) => state.user.name)
     return (
         <Component>
-            <Hello>Cześć <HelloBold>{name}</HelloBold></Hello>
-            <Separator/>
+            <Hello>
+              Cześć<HelloBold>{name}</HelloBold>!
+            </Hello>
             <TopRight>
                 <NotificationIcon/>
                 <div>
@@ -28,7 +28,7 @@ const Component = styled.div({
     gridColumn: '2/3',
     gridRow: '1/2',
     height: '3rem',
-    padding: '1rem 1rem',
+    padding: '1rem 1.5rem',
     boxShadow: '0 0 2rem rgba(0,0,0,.15)',
     background: 'white',
     zIndex: 99,
@@ -39,19 +39,17 @@ const Component = styled.div({
 
 const Hello = styled.span`
     font-size: 1.8rem;
-    display: inline-block;
+    display: flex;
+    align-items: center;
     @media screen and (max-width: 840px) {
         display: none;
     }
 `
 
 const HelloBold = styled.span({
-    fontWeight: 900
+    fontWeight: 900,
+    marginLeft: '.5rem'
 })
-
-const Separator = styled.div`
-    
-`
 
 const TopRight = styled.div`
     display: flex;

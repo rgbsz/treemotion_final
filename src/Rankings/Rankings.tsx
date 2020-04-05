@@ -8,6 +8,9 @@ import { fetchAccessToken, fetchUser } from '../global/functions'
 import { fetchUsersRanking, fetchCitiesRanking } from './functions'
 import NavigationPanel from '../global/components/NavigationPanel'
 import TopPanel from '../global/components/TopPanel'
+import BronzeIcon from '../global/img/BronzeIcon'
+import SilverIcon from '../global/img/SilverIcon'
+import GoldIcon from '../global/img/GoldIcon'
 
 const Rankings: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
@@ -32,10 +35,26 @@ const Rankings: React.FC<RouteComponentProps> = () => {
             <TopPanel/>
             <NavigationPanel/>
             <Content>
-                {usersRanking.map((el: any, i: number) => el.email === user.email ? <ContentItem key={el.id}>Ja</ContentItem> : <ContentItem key={el.id}>{i+1}. {el.firstName}</ContentItem>)}
-            </Content>
-            <Content>
-                {citiesRanking.map((el: any, i: number) => <ContentItem key={el.id}>{i+1}. {el.name}</ContentItem>)}
+                <List_1>
+                    <TopRanking>
+                        <TopRankingItem><GoldIcon/> {usersRanking[0].firstName}</TopRankingItem>
+                        <TopRankingItem><SilverIcon/> {usersRanking[1].firstName}</TopRankingItem>
+                        <TopRankingItem><BronzeIcon/> {usersRanking[2].firstName}</TopRankingItem>
+                    </TopRanking>
+                    <ProperList>
+                        {usersRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.firstName}</ContentItem>)}
+                    </ProperList>
+                </List_1>
+                <List_2>
+                    <TopRanking>
+                        <TopRankingItem><GoldIcon/> {citiesRanking[0].name}</TopRankingItem>
+                        <TopRankingItem><SilverIcon/> {citiesRanking[1].name}</TopRankingItem>
+                        <TopRankingItem><BronzeIcon/> {citiesRanking[2].name}</TopRankingItem>
+                    </TopRanking>
+                    <ProperList>
+                        {citiesRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.name}</ContentItem>)}
+                    </ProperList>
+                </List_2>
             </Content>
         </Container>
         )
@@ -46,27 +65,74 @@ const Rankings: React.FC<RouteComponentProps> = () => {
 const Container = styled.div`
     width: 100%;
     height: 100vh;
-    padding: 6.4rem 1.4rem 1.4rem 7.5rem;
-    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 18rem auto;
+    grid-template-rows: 5rem auto;
     position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    @media screen and (min-width: 1024px) {
-        padding: 6.4rem 1.4rem 1.4rem 19.5rem;
-    }
 `
 
 const Content = styled.div({
-    width: 'calc(50% - .8rem)',
+    width: '100%',
     maxHeight: '100%',
-    position: 'relative',
-    borderRadius: '4px',
-    overflowY: 'scroll',
-    boxShadow: '0 0 1rem rgba(0,0,0,.15)',
-    background: 'white',
+    padding: '1.5rem',
+    boxSizing: 'border-box',
+    position: 'relative'
 })
+
+const List_1 = styled.div`
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: calc(50% - 2.25rem);
+    height: calc(100% - 3rem);
+    box-shadow: 0 0 1rem rgba(0,0,0,.15);
+`
+
+const ProperList = styled.div({
+    borderRadius: '4px',
+    background: 'white',
+    overflowY: 'scroll',
+    maxHeight: '31.9rem'
+})
+
+const TopRanking = styled.div`
+    width: '100%',
+    position: fixed;
+    bottom: 0;
+    left: 0;
+`
+
+const TopRankingItem = styled.div`
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1rem .5rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &:first-of-type {
+      background: #f2f2f2;
+    }
+    &:nth-of-type(2) {
+      background: white;
+    }
+    &:last-of-type {
+      background: #f2f2f2;
+    }
+    svg {
+      width: 2rem;
+      height: 2rem;
+      margin-right: .5rem;
+    }
+`
+
+const List_2 = styled.div`
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: calc(50% - 2.25rem);
+    max-height: calc(100% - 3rem);
+    box-shadow: 0 0 1rem rgba(0,0,0,.15);
+`
 
 const ContentItem = styled.div`
     width: 100%;

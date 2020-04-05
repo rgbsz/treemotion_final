@@ -89,23 +89,20 @@ const Workouts: React.FC<RouteComponentProps> = ({ match }) => {
 const Container = styled.div`
     width: 100%;
     height: 100vh;
-    padding: 6.4rem 1.4rem 1.4rem 7.5rem;
-    box-sizing: border-box;
-    position: relative;
-    overflow-y: scroll;
-    z-index: 1;
-    @media screen and (min-width: 1024px) {
-        padding: 6.4rem 1.4rem 1.4rem 19.5rem;
-    }
+    display: grid;
+    grid-template-columns: 18rem auto;
+    grid-template-rows: 5rem auto;
 `
 
 const Content = styled.div({
     width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    position: 'relative'
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateRows: 'min-content',
+    gridColumnGap: '1.5rem',
+    padding: '1.5rem',
+    boxSizing: 'border-box',
+    height: 'auto'
 })
 
 const AllWorkouts = styled.div({

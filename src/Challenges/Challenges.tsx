@@ -265,17 +265,22 @@ const Challenges: React.FC<RouteComponentProps> = () => {
 
 const Container = styled.div`
     width: 100%;
-    max-height: 100vh;
-    padding: 6.4rem 1.4rem 1.4rem 7.5rem;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
+    height: 100vh;
     display: grid;
-    grid-template-rows: auto 1fr;
-    @media screen and (min-width: 1024px) {
-        padding: 5rem 0 0 18rem;
-    }
+    grid-template-columns: 18rem auto;
+    grid-template-rows: 5rem auto;
 `
+
+const Content = styled.div({
+    width: '100%',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateRows: 'min-content',
+    gridColumnGap: '1.5rem',
+    padding: '1.5rem',
+    boxSizing: 'border-box',
+    height: 'auto'
+})
 
 const JoinChallengeModal = styled.div<{ active: boolean }>`
     position: fixed;
@@ -317,20 +322,6 @@ const JoinChallengeButtons = styled.div`
     margin: 1rem 0 0 0;
     display: flex;
 `
-
-const Content = styled.div({
-    maxHeight: '100%',
-    position: 'relative',
-    overflowY: 'scroll',
-    width: '100%',
-    borderRadius: '4px',
-    gridRow: '2/3',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gridGap: '1.5rem',
-    padding: '1.5rem',
-    boxSizing: 'border-box'
-})
 
 const ContentItem = styled.div<{ locked: boolean }>`
     padding: 1rem;
