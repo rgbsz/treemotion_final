@@ -73,7 +73,7 @@ export const setFutureChallenges = (challenges: challengeTypes[]) => {
     }
 }
 
-export const setCurrentChallenge = (challenge: challengeTypes) => {
+export const setCurrentChallenge = (challenge: challengeTypes | null) => {
     return {
         type: 'SET_CURRENT_CHALLENGE',
         payload: {

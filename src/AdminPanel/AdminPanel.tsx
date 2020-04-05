@@ -12,7 +12,7 @@ import Button from '../global/components/Button'
 import BronzeIcon from '../global/img/BronzeIcon'
 import SilverIcon from '../global/img/SilverIcon'
 import GoldIcon from '../global/img/GoldIcon'
-import { setAllChallenges } from '../redux/actions'
+import { setAllChallenges, setFutureChallenges, setCurrentChallenge } from '../redux/actions'
 
 const AdminPanel: React.FC<RouteComponentProps> = () => {
     const dispatch = useDispatch()
@@ -70,6 +70,47 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
         }
         setAddChallengeRequest(false)
     }
+    const [removeChallengeRequest, setRemoveChallengeRequest] = useState<boolean>(false)
+    async function handleRemoveChallenge(e: any, id: number, type: string) {
+      e.preventDefault()
+      setRemoveChallengeRequest(true)
+      try {
+          e.preventDefault()
+          const query = await fetch(
+              'https://treemotion.herokuapp.com/challenge/delete',
+              {
+                  method: 'DELETE',
+                  body: JSON.stringify({
+                      id: id
+                  }),
+                  headers: { 'Content-type': 'application/json' },
+              },
+          )
+          const res = await query.json()
+          if (!res.success) {
+              alert('Błąd')
+          }
+          else {
+              if(type === 'future') {
+                const newFutureChallenges = futureChallenges.filter(function(obj: any) {
+                    return obj.challenge.id !== id;
+                });
+                dispatch(setFutureChallenges(newFutureChallenges))
+              }
+              else if(type === 'current') {
+                dispatch(setCurrentChallenge(null))
+              }
+              else {
+                const newAllChallenges = allChallenges.filter(function(obj: any) {
+                    return obj.id !== id;
+                });
+                dispatch(setAllChallenges(newAllChallenges))
+              }
+          }
+      } catch(e) {
+          console.log(`Error: ${e.message}`)
+      }
+    }
     if(request) {
         return (
             <Container>
@@ -104,13 +145,19 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
                 </AddChallengeModal>
                 <Content>
                     <Challenges>
-                        <Button text='Dodaj wyzwanie' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
+                        <AddChallengeButton text='Dodaj wyzwanie' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
                         <List>
-                            {currentChallenge && <Challenge>{currentChallenge.challenge.name}</Challenge>}
-                            {futureChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.challenge.name}</Challenge>)}
-                            {allChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}</Challenge>)}
+                            {currentChallenge && <Challenge>{currentChallenge.challenge.name}<Button text='Usuń' loading={false} onClick={(e: any) => handleRemoveChallenge(e, currentChallenge.challenge.id, 'current')}/></Challenge>}
+                            {futureChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.challenge.name}<Button text='Usuń' loading={false} onClick={(e: any) => handleRemoveChallenge(e, challenge.challenge.id, 'future')}/></Challenge>)}
+                            {allChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}<Button text='Usuń' loading={false} onClick={(e: any) => handleRemoveChallenge(e, challenge.id, 'all')}/></Challenge>)}
                         </List>
                     </Challenges>
+                    <Bugs>
+                        <AddChallengeButton text='Dodaj błąd' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
+                        <List>
+                            <Bug>Wyjebać maksa z projektu<Button text='Usuń' loading={false} onClick={(e: any) => alert('hehe')}/></Bug>
+                        </List>
+                    </Bugs>
                 </Content>
             </Container>
         )
@@ -136,12 +183,18 @@ const Content = styled.div({
     display: 'grid',
     gridGap: '1.5rem',
     gridTemplateColumns: 'repeat(2, 1fr)',
-    position: 'relative'
+    position: 'relative',
+    overflowY: 'scroll'
 })
 
 const StyledButton = styled(Button)`
     margin: 0;
     width: 100%;
+`
+
+const AddChallengeButton = styled(Button)`
+    margin: 0;
+    border-radius: 4px 4px 0 0;
 `
 
 const AddChallengeModal = styled.div<{ active: boolean }>`
@@ -176,9 +229,10 @@ const Challenges = styled.div({
     flexDirection: 'column'
 })
 
+const Bugs = styled(Challenges)``
+
 const List = styled.div`
     grid-row: 2/3;
-    margin: 1.5rem 0 0 0;
     box-shadow: 0 0 2rem rgba(0,0,0,.15);
     border-radius: 4px;
     overflow-y: scroll;
@@ -187,10 +241,18 @@ const List = styled.div`
 
 const Challenge = styled.div`
     padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    button {
+      margin: 0;
+    }
     &:nth-child(2n) {
       background: #f2f2f2;
     }
 `
+
+const Bug = styled(Challenge)``
 
 const AddChallengeItem = styled.div<{ locked: boolean }>`
     padding: 1rem;

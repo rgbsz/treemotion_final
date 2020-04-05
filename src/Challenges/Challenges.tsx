@@ -151,7 +151,7 @@ const Challenges: React.FC<RouteComponentProps> = () => {
                 </StyledContentItem>
                 <JoinChallengeButtons>
                     <StyledButton text='Dołącz' loading={joinChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleJoinChallenge(e)}/>
-                    <StyledButton text='Wróć' loading={joinChallengeRequest} className='StyledButton' onClick={() => setJoinChallengeModalActive(false)}/>
+                    <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setJoinChallengeModalActive(false)}/>
                 </JoinChallengeButtons>
             </JoinChallengeModal>
             <LeaveChallengeModal active={leaveChallengeModalActive}>
@@ -175,27 +175,30 @@ const Challenges: React.FC<RouteComponentProps> = () => {
                 </StyledContentItem>
                 <JoinChallengeButtons>
                     <StyledButton text='Opuść wyzwanie' loading={leaveChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleLeaveChallenge(e)}/>
-                    <StyledButton text='Wróć' loading={leaveChallengeRequest} className='StyledButton' onClick={() => setLeaveChallengeModalActive(false)}/>
+                    <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setLeaveChallengeModalActive(false)}/>
                 </JoinChallengeButtons>
             </LeaveChallengeModal>
             <Content>
             {
               currentChallenge &&
               <ContentItem locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
-                <h1>{currentChallenge.challenge.name}</h1>
+                <Locked>
+                  <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
+                </Locked>
+                <h1>{currentChallenge.challenge.name} ({currentChallenge.userDistance} z {currentChallenge.challenge.distance} km)</h1>
                 <Bar>
-                  <ProgressBar locked={48}/>
+                  <ProgressBar locked={currentChallenge.progress}/>
                   <Part>
                     <BronzeIcon/>
-                    <Score>{currentChallenge.challenge.bronzeMedalDistance} km</Score>
+                    <Score>{Math.floor(currentChallenge.challenge.bronzeMedalDistance)} km</Score>
                   </Part>
                   <Part>
                     <SilverIcon/>
-                    <Score>{currentChallenge.challenge.silverMedalDistance} km</Score>
+                    <Score>{Math.floor(currentChallenge.challenge.silverMedalDistance)} km</Score>
                   </Part>
                   <Part>
                     <GoldIcon/>
-                    <Score>{currentChallenge.challenge.distance} km</Score>
+                    <Score>{Math.floor(currentChallenge.challenge.distance)} km</Score>
                   </Part>
                 </Bar>
               </ContentItem>
@@ -204,20 +207,23 @@ const Challenges: React.FC<RouteComponentProps> = () => {
               futureChallenges.length > 0 &&
               futureChallenges.map((challenge: any) => (
                 <ContentItem locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
+                  <Locked>
+                    <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
+                  </Locked>
                   <h1>{challenge.challenge.name} - w kolejce</h1>
                   <Bar>
-                    <ProgressBar locked={48}/>
+                    <ProgressBar locked={null}/>
                     <Part>
                       <BronzeIcon/>
-                      <Score>{challenge.challenge.bronzeMedalDistance} km</Score>
+                      <Score>{Math.floor(challenge.challenge.bronzeMedalDistance)} km</Score>
                     </Part>
                     <Part>
                       <SilverIcon/>
-                      <Score>{challenge.challenge.silverMedalDistance} km</Score>
+                      <Score>{Math.floor(challenge.challenge.silverMedalDistance)} km</Score>
                     </Part>
                     <Part>
                       <GoldIcon/>
-                      <Score>{challenge.challenge.distance} km</Score>
+                      <Score>{Math.floor(challenge.challenge.distance)} km</Score>
                     </Part>
                   </Bar>
                 </ContentItem>
@@ -232,18 +238,18 @@ const Challenges: React.FC<RouteComponentProps> = () => {
                   </Locked>
                   <h1>{challenge.name}</h1>
                   <Bar>
-                    <ProgressBar locked={48}/>
+                    <ProgressBar locked={null}/>
                     <Part>
                       <BronzeIcon/>
-                      <Score>{challenge.bronzeMedalDistance} km</Score>
+                      <Score>{Math.floor(challenge.bronzeMedalDistance)} km</Score>
                     </Part>
                     <Part>
                       <SilverIcon/>
-                      <Score>{challenge.silverMedalDistance} km</Score>
+                      <Score>{Math.floor(challenge.silverMedalDistance)} km</Score>
                     </Part>
                     <Part>
                       <GoldIcon/>
-                      <Score>{challenge.distance} km</Score>
+                      <Score>{Math.floor(challenge.distance)} km</Score>
                     </Part>
                   </Bar>
                 </ContentItem>
@@ -295,6 +301,16 @@ const LeaveChallengeModal = styled(JoinChallengeModal)`
 const StyledButton = styled(Button)`
     margin: .4rem 1rem;
     width: 100%;
+    background: white;
+    span {
+      color: black;
+    }
+    div {
+      border-top: 2px solid black;
+    }
+    &:hover {
+      background: #f2f2f2;
+    }
 `
 
 const JoinChallengeButtons = styled.div`
@@ -335,7 +351,7 @@ const ContentItem = styled.div<{ locked: boolean }>`
 const StyledContentItem = styled(ContentItem)`
     padding: 1rem;
     background: white;
-    width: 30rem;
+    width: 20rem;
     border-radius: 4px;
     box-shadow: 0 0 1rem rgba(0,0,0,.15);
     position: relative;

@@ -11,7 +11,7 @@ const TopPanel: React.FC = () => {
     return (
         <Component>
             <Hello>Cześć <HelloBold>{name}</HelloBold></Hello>
-            <StyledTextField className='StyledTextField' type='text' placeholder='Szukaj' onInput={() => console.log('Search')} processing={false}/>
+            <Separator/>
             <TopRight>
                 <NotificationIcon/>
                 <div>
@@ -49,10 +49,8 @@ const HelloBold = styled.span({
     fontWeight: 900
 })
 
-const StyledTextField = styled(TextField)`
-    margin: 0;
-    margin-right: 1rem;
-    width: 30rem;
+const Separator = styled.div`
+    
 `
 
 const TopRight = styled.div`
