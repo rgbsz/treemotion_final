@@ -39,15 +39,32 @@ const workouts = (state = null, action: any) => {
     }
 }
 
-const challenges = (state = null, action: any) => {
+const allChallenges = (state = null, action: any) => {
     switch(action.type) {
-        case 'SET_CHALLENGES':
-            return {
-              state,
-              allChallenges: action.payload.challenges,
-              currentChallenge: action.payload.currentChallenge ? action.payload.currentChallenge.challenge : null,
-              futureChallenges: action.payload.futureChallenges
-            }
+        case 'SET_ALL_CHALLENGES':
+            return action.payload.challenges
+        case 'DELETE_CHALLENGES':
+            return null
+        default:
+            return state
+    }
+}
+
+const futureChallenges = (state = null, action: any) => {
+    switch(action.type) {
+        case 'SET_FUTURE_CHALLENGES':
+            return action.payload.challenges
+        case 'DELETE_CHALLENGES':
+            return null
+        default:
+            return state
+    }
+}
+
+const currentChallenge = (state = null, action: any) => {
+    switch(action.type) {
+        case 'SET_CURRENT_CHALLENGE':
+            return action.payload.challenge ? action.payload.challenge : null
         case 'DELETE_CHALLENGES':
             return null
         default:
@@ -81,7 +98,9 @@ const reducers = combineReducers({
     accessToken,
     user,
     workouts,
-    challenges,
+    allChallenges,
+    futureChallenges,
+    currentChallenge,
     usersRanking,
     citiesRanking
 })

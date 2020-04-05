@@ -12,14 +12,16 @@ import Button from '../global/components/Button'
 import BronzeIcon from '../global/img/BronzeIcon'
 import SilverIcon from '../global/img/SilverIcon'
 import GoldIcon from '../global/img/GoldIcon'
-import { setChallenges } from '../redux/actions'
+import { setAllChallenges } from '../redux/actions'
 
 const AdminPanel: React.FC<RouteComponentProps> = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const accessToken = useSelector((state: any) => state.accessToken)
     const user = useSelector((state: any) => state.user)
-    const challenges = useSelector((state: any) => state.challenges)
+    const allChallenges = useSelector((state: any) => state.allChallenges)
+    const futureChallenges = useSelector((state: any) => state.futureChallenges)
+    const currentChallenge = useSelector((state: any) => state.currentChallenge)
     const [request, setRequest] = useState<boolean>(false)
     useEffect(() => {
         if(!accessToken) fetchAccessToken()
@@ -29,9 +31,9 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
           history.push('/sign-in');
           removeRedux()
         }
-        else if(!challenges) fetchChallenges(accessToken)
+        else if(!allChallenges) fetchChallenges(accessToken)
         else setRequest(true)
-    }, [accessToken, user, challenges])
+    }, [accessToken, user, allChallenges, futureChallenges, currentChallenge])
 
     const [addChallengeModal, setAddChallengeModal] = useState<boolean>(false)
     const [addChallengeName, setAddChallengeName] = useState<null | string>(null)
@@ -60,7 +62,7 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
                 alert('Błąd')
             }
             else {
-                dispatch(setChallenges([res.challenge, ...challenges.allChallenges], challenges.currentChallenge, challenges.futureChallenges))
+                dispatch(setAllChallenges([res.challenge, ...allChallenges]))
                 setAddChallengeModal(false)
             }
         } catch(e) {
@@ -104,7 +106,9 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
                     <Challenges>
                         <Button text='Dodaj wyzwanie' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
                         <List>
-                            {challenges.allChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}</Challenge>)}
+                            {currentChallenge && <Challenge>{currentChallenge.challenge.name}</Challenge>}
+                            {futureChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.challenge.name}</Challenge>)}
+                            {allChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}</Challenge>)}
                         </List>
                     </Challenges>
                 </Content>

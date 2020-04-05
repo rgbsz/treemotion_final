@@ -1,5 +1,5 @@
 import store from '../store'
-import { setChallenges } from '../redux/actions'
+import { setAllChallenges, setFutureChallenges, setCurrentChallenge } from '../redux/actions'
 
 export const fetchChallenges = async (accessToken: string) => {
     console.log('Fetching challenges...')
@@ -12,7 +12,9 @@ export const fetchChallenges = async (accessToken: string) => {
             }
         )
         const res = await query.json()
-        store.dispatch(setChallenges(res.challenges, res.currentChallenge, res.futureChallenges))
+        store.dispatch(setAllChallenges(res.challenges))
+        store.dispatch(setFutureChallenges(res.futureChallenges))
+        store.dispatch(setCurrentChallenge(res.currentChallenge))
     }
     catch(e) {
         console.log(e.message)

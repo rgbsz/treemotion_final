@@ -47,19 +47,37 @@ export const deleteWorkouts = () => {
 }
 
 type challengeTypes = {
-  id: number,
-  name: string,
-  distance: number,
-  userDistance?: number
+  challenge: {
+    id: number,
+    name: string,
+    distance: number,
+    userDistance?: number
+  }
 }
 
-export const setChallenges = (challenges: challengeTypes[], currentChallenge: null | Object, futureChallenges: challengeTypes[]) => {
+export const setAllChallenges = (challenges: challengeTypes[]) => {
     return {
-        type: 'SET_CHALLENGES',
+        type: 'SET_ALL_CHALLENGES',
         payload: {
-            challenges,
-            currentChallenge,
-            futureChallenges
+            challenges
+        }
+    }
+}
+
+export const setFutureChallenges = (challenges: challengeTypes[]) => {
+    return {
+        type: 'SET_FUTURE_CHALLENGES',
+        payload: {
+            challenges
+        }
+    }
+}
+
+export const setCurrentChallenge = (challenge: challengeTypes) => {
+    return {
+        type: 'SET_CURRENT_CHALLENGE',
+        payload: {
+            challenge
         }
     }
 }
