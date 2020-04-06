@@ -12,6 +12,7 @@ import AdminPanel from './AdminPanel/AdminPanel';
 import Verify from './Verify/Verify'
 import ForgotPassword from './ForgotPassword/ForgotPassword'
 import ProvideNewPassword from './ProvideNewPassword/ProvideNewPassword'
+import Image from './SignUp/img/sign_in.jpg'
 
 const GlobalStyle = createGlobalStyle`
     * {
@@ -21,9 +22,13 @@ const GlobalStyle = createGlobalStyle`
     }
     body {
         overflow: hidden;
+        background: white;
+        background-size: cover;
+        background-position: center;
     }
     *::-webkit-scrollbar {
         width: 5px;
+        background-color: white;
     }
 
     *::-webkit-scrollbar-thumb {

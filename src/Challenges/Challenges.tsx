@@ -179,9 +179,10 @@ const Challenges: React.FC<RouteComponentProps> = () => {
                 </JoinChallengeButtons>
             </LeaveChallengeModal>
             <Content>
+              {!currentChallenge && <Hint>Nie masz jeszcze aktywnego wyzwania. Kliknij na wyzwanie, aby do niego dołączyć - kolejne wyzwania zostaną dodane do kolejki i będą po kolei aktywowane wraz z kończeniem wyzwań.</Hint>}
             {
               currentChallenge &&
-              <ContentItem locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
+              <ContentItem number={currentChallenge ? 1 + allChallenges.length + futureChallenges.length : allChallenges.length + futureChallenges.length} locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
                 <Locked>
                   <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
                 </Locked>
@@ -206,7 +207,7 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             {
               futureChallenges.length > 0 &&
               futureChallenges.map((challenge: any) => (
-                <ContentItem locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
+                <ContentItem number={currentChallenge ? 1 + allChallenges.length + futureChallenges.length : allChallenges.length + futureChallenges.length} locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
                   <Locked>
                     <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
                   </Locked>
@@ -232,7 +233,7 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             {
               allChallenges.length > 0 &&
               allChallenges.map((challenge: any) => (
-                <ContentItem locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
+                <ContentItem number={currentChallenge ? 1 + allChallenges.length + futureChallenges.length : allChallenges.length + futureChallenges.length} locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
                   <Locked>
                     <span>{currentChallenge ? 'Kliknij, aby dodać do kolejki' : 'Kliknij, aby dołączyć'}</span>
                   </Locked>
@@ -275,12 +276,23 @@ const Content = styled.div({
     width: '100%',
     display: 'grid',
     gridTemplateColumns: 'repeat(3, 1fr)',
-    gridTemplateRows: 'min-content',
+    gridAutoRows: 'min-content',
     gridColumnGap: '1.5rem',
+    gridRowGap: '1.5rem',
     padding: '1.5rem',
     boxSizing: 'border-box',
     height: 'auto'
 })
+
+const Hint = styled.div`
+    grid-column: 1/4;
+    padding: 1.5rem;
+    background: white;
+    box-shadow: 0 0 1rem rgba(0,0,0,.15);
+    text-align: justify;
+    display: flex;
+    border-radius: 4px;
+`
 
 const JoinChallengeModal = styled.div<{ active: boolean }>`
     position: fixed;
@@ -323,7 +335,7 @@ const JoinChallengeButtons = styled.div`
     display: flex;
 `
 
-const ContentItem = styled.div<{ locked: boolean }>`
+const ContentItem = styled.div<{ locked: boolean, number?: number }>`
     padding: 1rem;
     background: white;
     border-radius: 4px;
@@ -332,9 +344,6 @@ const ContentItem = styled.div<{ locked: boolean }>`
     h1 {
       font-size: 1rem;
       font-weight: 500;
-    }
-    &:last-of-type {
-      margin-bottom: 1.5rem;
     }
     filter: ${props => props.locked ? 'grayscale(100%)' : 'grayscale(0%)'}
 `

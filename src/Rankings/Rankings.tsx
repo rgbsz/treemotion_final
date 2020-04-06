@@ -73,32 +73,37 @@ const Container = styled.div`
 
 const Content = styled.div({
     width: '100%',
-    maxHeight: '100%',
+    height: '100%',
     padding: '1.5rem',
     boxSizing: 'border-box',
-    position: 'relative'
+    position: 'relative',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gridColumnGap: '1.5rem'
 })
 
 const List_1 = styled.div`
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    width: calc(50% - 2.25rem);
-    height: calc(100% - 3rem);
     box-shadow: 0 0 1rem rgba(0,0,0,.15);
+    overflow: hidden;
+    position: relative;
+    height: 100%;
 `
 
 const ProperList = styled.div({
+    position: 'absolute',
+    bottom: '0',
+    left: '0',
     borderRadius: '4px',
     background: 'white',
     overflowY: 'scroll',
-    maxHeight: '31.9rem'
+    maxHeight: 'calc(100% - 12rem)',
+    width: '100%'
 })
 
 const TopRanking = styled.div`
     width: '100%',
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
 `
 
@@ -126,12 +131,11 @@ const TopRankingItem = styled.div`
 `
 
 const List_2 = styled.div`
-    position: absolute;
     top: 1.5rem;
-    right: 1.5rem;
-    width: calc(50% - 2.25rem);
-    max-height: calc(100% - 3rem);
+    left: 1.5rem;
     box-shadow: 0 0 1rem rgba(0,0,0,.15);
+    overflow: hidden;
+    max-height: 100%;
 `
 
 const ContentItem = styled.div`

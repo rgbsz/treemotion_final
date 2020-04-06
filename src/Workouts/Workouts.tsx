@@ -105,6 +105,8 @@ const Workouts: React.FC<RouteComponentProps> = () => {
                               workout={workout}
                           />
                           <Description>
+                              {!workout ? <p>Nie wybrano treningu</p> :
+                              <>
                               <DescriptionItem>
                                   <RoadIcon/>
                                   {workout && <span>{workout.distance > 1000 ? `${Math.floor(((workout.distance / 100) * 100) / 100)}km` : `${workout.distance}m`}</span>}
@@ -117,13 +119,14 @@ const Workouts: React.FC<RouteComponentProps> = () => {
                                   <TimeIcon/>
                                   {workout && <span>{workout.duration / 60 > 60 ? `${Math.floor((workout.duration / 3600) * 100) / 100}h` : workout.duration / 60 < 1 ?  `${workout.duration}s` : `${Math.floor((workout.duration / 60) * 100) / 100} min`}</span>}
                               </DescriptionItem>
+                            </>}
                           </Description>
                       </RightSideWrapper>
                   </Content>
                   :
-                  <Content>
-                      Nie masz zadnych treningów mordo
-                  </Content>
+                  <NoWorkouts>
+                      Nie masz żadnych treningów.
+                  </NoWorkouts>
                 }
             </Container>
         )
@@ -149,15 +152,25 @@ const Content = styled.div({
     boxSizing: 'border-box',
 })
 
+const NoWorkouts = styled.div`
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 0 0 1.5rem rgba(0,0,0,.15);
+`
+
 const WorkoutsPlaceholder = styled.div`
     gridColumn: 1/2;
-    background: white;
+    background: transparent;
     borderRadius: 4px;
     position: relative;
     boxShadow: 0 0 1rem rgba(0,0,0,.15);
     width: 100%;
     height: 100%;
-    background: white;
 `
 
 const AllWorkouts = styled.div({
@@ -168,7 +181,8 @@ const AllWorkouts = styled.div({
     maxHeight: '100%',
     width: '100%',
     boxShadow: '0 0 1rem rgba(0,0,0,.15)',
-    borderRadius: '4px'
+    borderRadius: '4px',
+    background: 'rgba(0,0,0,0)'
 })
 
 const WorkoutItem = styled.div<{active: boolean}>`
@@ -177,6 +191,8 @@ const WorkoutItem = styled.div<{active: boolean}>`
     box-sizing: border-box;
     transition: .2s;
     color: ${props => props.active ? '#146D52' : 'black'};
+    background: white;
+    font-weight: ${props => props.active ? 'bold' : 'regular'};
     &:hover {
         color: #146D52;
         cursor: pointer;
@@ -207,9 +223,14 @@ const Description = styled.div`
     margin-top: 1.5rem;
     border-radius: 4px;
     box-shadow: 0 0 1rem rgba(0,0,0,.15);
+    background: white;
     display: flex;
     justify-content: space-around;
     align-items: center;
+    p {
+      font-size: 2rem;
+      font-weight: bold;
+    }
 `
 
 const DescriptionItem = styled.div`

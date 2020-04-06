@@ -155,7 +155,7 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
                     <Bugs>
                         <AddChallengeButton text='Dodaj błąd' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
                         <List>
-                            <Bug>Wyjebać maksa z projektu<Button text='Usuń' loading={false} onClick={(e: any) => alert('hehe')}/></Bug>
+                            <Bug>Jakiś bug<Button text='Usuń' loading={false} onClick={(e: any) => alert('hehe')}/></Bug>
                         </List>
                     </Bugs>
                 </Content>
