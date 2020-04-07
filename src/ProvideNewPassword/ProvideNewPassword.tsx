@@ -24,8 +24,8 @@ const ProvideNewPassword: React.FC<RouteComponentProps> = () => {
     async function saveChanges(e: any) {
       setLoading(true)
       e.preventDefault()
-      if(newPassword !== confirmPassword && (newPassword !== '' || confirmPassword !== '')) setError('Password must be the same.')
-      else if(newPassword === '' || confirmPassword === '') setError('None of these fields can be empty.')
+      if(newPassword !== confirmPassword && (newPassword !== '' || confirmPassword !== '')) setError('Hasła muszą być takie same.')
+      else if(newPassword === '' || confirmPassword === '') setError('Żadne z tych pól nie może być puste.')
       else {
         try {
             const query = await fetch(
@@ -56,13 +56,13 @@ const ProvideNewPassword: React.FC<RouteComponentProps> = () => {
             <Form onSubmit={(e: any) => saveChanges(e)}>
                 <TextField
                     type="password"
-                    placeholder='New password'
+                    placeholder='Nowe hasło'
                     onInput={(e: string) => setNewPassword(e)}
                     processing={loading}
                 />
                 <TextField
                     type="password"
-                    placeholder='Confirm new password'
+                    placeholder='Powtórz nowe hasło'
                     onInput={(e: string) => setConfirmPassword(e)}
                     processing={loading}
                 />

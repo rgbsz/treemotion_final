@@ -51,9 +51,9 @@ const Rankings: React.FC<RouteComponentProps> = () => {
                         <TopRankingItem><SilverIcon/> {citiesRanking[1].name}</TopRankingItem>
                         <TopRankingItem><BronzeIcon/> {citiesRanking[2].name}</TopRankingItem>
                     </TopRanking>
-                    <ProperList>
-                        {citiesRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.name}</ContentItem>)}
-                    </ProperList>
+                    {/*<ProperList>*/}
+                    {/*    {citiesRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.name}</ContentItem>)}*/}
+                    {/*</ProperList>*/}
                 </List_2>
             </Content>
         </Container>
@@ -131,11 +131,9 @@ const TopRankingItem = styled.div`
 `
 
 const List_2 = styled.div`
-    top: 1.5rem;
-    left: 1.5rem;
     box-shadow: 0 0 1rem rgba(0,0,0,.15);
     overflow: hidden;
-    max-height: 100%;
+    height: 12rem;
 `
 
 const ContentItem = styled.div`

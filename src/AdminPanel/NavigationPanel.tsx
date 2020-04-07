@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter, useHistory, Link } from 'react-router-dom'
+import { useSelector } from "react-redux"
 import WorkoutsIcon from '../global/img/WorkoutsIcon'
 import ChallengesIcon from '../global/img/ChallengesIcon'
 import RankingsIcon from '../global/img/RankingsIcon'
@@ -9,7 +10,8 @@ import SignOutIcon from '../global/img/SignOutIcon'
 import { removeRedux } from '../global/functions'
 
 const NavigationPanel: React.FC = () => {
-    let history = useHistory()
+    const history = useHistory()
+    const user = useSelector((state: any) => state.user)
     return (
         <Component>
             <Container>
@@ -32,10 +34,13 @@ const NavigationPanel: React.FC = () => {
                     <SettingsIcon/>
                     <ButtonText>Ustawienia</ButtonText>
                 </Button>
-                <Button to='/admin'>
-                    <SettingsIcon/>
-                    <ButtonText>Panel admina</ButtonText>
-                </Button>
+                {
+                    user.isAdmin && 
+                    <Button to='/admin'>
+                        <SettingsIcon/>
+                        <ButtonText>Panel admina</ButtonText>
+                    </Button>
+                }
                 <SignOut onClick={() => { localStorage.removeItem('refreshToken'); history.push('/sign-in'); removeRedux() }}>
                     <SignOutIcon/>
                     <ButtonText>Wyloguj się</ButtonText>

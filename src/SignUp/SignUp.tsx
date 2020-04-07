@@ -10,7 +10,7 @@ import Radio from '../global/components/Radio'
 import Image from './img/sign_in.jpg'
 
 const SignUp: React.FC<RouteComponentProps> = () => {
-    let history = useHistory()
+    const history = useHistory()
     const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość']
     const [slide, setSlide] = useState(1)
     setTimeout(() => {
