@@ -20,6 +20,7 @@ const Challenges: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
     const accessToken = useSelector((state: StateTypes) => state.accessToken)
     const user = useSelector((state: StateTypes) => state.user)
+    const [challengesHint, setChallengesHint] = useState<string | null>(localStorage.getItem('challengesHint'))
     const allChallenges = useSelector((state: StateTypes) => state.allChallenges)
     const futureChallenges = useSelector((state: StateTypes) => state.futureChallenges)
     const currentChallenge = useSelector((state: StateTypes) => state.currentChallenge)
@@ -95,7 +96,7 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             if (res.success) {
                 if(currentChallenge && currentChallenge.challenge.id === leaveChallengeData.challenge.id) {
                     dispatch(futureChallenges && setFutureChallenges(futureChallenges.splice(1)))
-                    dispatch(futureChallenges && setCurrentChallenge(futureChallenges.splice(0,1)[0]))
+                    dispatch(dispatch(futureChallenges ? setCurrentChallenge(futureChallenges.splice(0,1)[0]) : null))
                     dispatch(allChallenges && setAllChallenges([...allChallenges, currentChallenge.challenge]))
                 }
                 else {
@@ -176,8 +177,14 @@ const Challenges: React.FC<RouteComponentProps> = () => {
                 </JoinChallengeButtons>
             </LeaveChallengeModal>
             <Content>
-              {!currentChallenge && <Hint>Nie masz jeszcze aktywnego wyzwania. Kliknij na wyzwanie, aby do niego dołączyć - kolejne wyzwania zostaną dodane do kolejki i będą po kolei aktywowane wraz z kończeniem wyzwań.</Hint>}
-            {
+              {
+                  (!currentChallenge && challengesHint) &&
+                  <Hint>
+                      Nie masz jeszcze aktywnego wyzwania. Kliknij na wyzwanie, aby do niego dołączyć - kolejne wyzwania zostaną dodane do kolejki i będą po kolei aktywowane wraz z kończeniem wyzwań.
+                      <span onClick={() => {setChallengesHint(null); localStorage.removeItem('challengesHint')}}>Nie pokazuj więcej</span>
+                  </Hint>
+              }
+              {
               currentChallenge &&
               <ContentItem locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
                 <Locked>
@@ -203,8 +210,8 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             }
             {
               futureChallenges &&
-              futureChallenges.map((challenge: any) => (
-                <ContentItem locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
+              futureChallenges.map((challenge: any, i: number) => (
+                <ContentItem key={i} locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
                   <Locked>
                     <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
                   </Locked>
@@ -229,8 +236,8 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             }
             {
               allChallenges &&
-              allChallenges.map((challenge: any) => (
-                <ContentItem locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
+              allChallenges.map((challenge: any, i: number) => (
+                <ContentItem key={i} locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
                   <Locked>
                     <span>{currentChallenge ? 'Kliknij, aby dodać do kolejki' : 'Kliknij, aby dołączyć'}</span>
                   </Locked>
@@ -288,7 +295,15 @@ const Hint = styled.div`
     box-shadow: 0 0 1rem rgba(0,0,0,.15);
     text-align: justify;
     display: flex;
+    flex-direction: column;
     border-radius: 4px;
+    span {
+        margin-top: 1rem;
+        text-decoration: underline;
+        &:hover {
+            cursor: pointer;
+        }
+    }
 `
 
 const JoinChallengeModal = styled.div<{ active: boolean }>`

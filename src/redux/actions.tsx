@@ -78,7 +78,7 @@ export const deleteChallenges = () => {
     }
 }
 
-export const setUsersRanking = (users: any) => {
+export const setUsersRanking = (users: StateTypes['usersRanking']) => {
     return {
         type: 'SET_USERS_RANKING',
         payload: {
@@ -93,11 +93,11 @@ export const deleteUsersRanking = () => {
     }
 }
 
-export const setCitiesRanking = (users: any) => {
+export const setCitiesRanking = (cities: StateTypes['citiesRanking']) => {
     return {
         type: 'SET_CITIES_RANKING',
         payload: {
-            users
+            cities
         }
     }
 }

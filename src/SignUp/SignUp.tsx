@@ -55,6 +55,7 @@ const SignUp: React.FC<RouteComponentProps> = () => {
                   setLoading(false)
               } else {
                   localStorage.setItem('defaultEmail', email)
+                  localStorage.setItem('challengesHint', 'true')
                   history.push(`/sign-in`)
               }
           } catch(e) {
