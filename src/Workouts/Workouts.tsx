@@ -12,7 +12,7 @@ import TopPanel from '../global/components/TopPanel'
 import RoadIcon from '../global/img/RoadIcon'
 import SpeedometerIcon from '../global/img/SpeedometerIcon'
 import TimeIcon from '../global/img/TimeIcon'
-import BlueDot from '../global/img/blue-dot.png'
+import StateTypes from "../redux/types"
 
 const Map = withScriptjs(withGoogleMap((props: any) => {
     return (
@@ -55,10 +55,9 @@ const Map = withScriptjs(withGoogleMap((props: any) => {
 
 const Workouts: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
-    const accessToken = useSelector((state: any) => state.accessToken)
-    const user = useSelector((state: any) => state.user)
-    const workouts = useSelector((state: any) => state.workouts)
-    console.log(workouts)
+    const accessToken = useSelector((state: StateTypes) => state.accessToken)
+    const user = useSelector((state: StateTypes) => state.user)
+    const workouts = useSelector((state: StateTypes) => state.workouts)
     const [workoutsTimes, setWorkoutsTimes] = useState([{time: 'xd', date: 'xd'}])
     const [workout, setWorkout] = useState<any>(null)
     useEffect(() => {
@@ -89,11 +88,11 @@ const Workouts: React.FC<RouteComponentProps> = () => {
                 <NavigationPanel/>
                 <TopPanel/>
                 {
-                  workouts.length > 0 ?
+                  workouts && workouts.length > 0 ?
                   <Content>
                       <WorkoutsPlaceholder>
                       <AllWorkouts>
-                          { workouts.map((item: any, i: number) => <WorkoutItem onClick={() => setWorkout(item)} active={workout && workout.id === item.id ? true : false} key={i}>{workouts.length - i}: {workoutsTimes[i].date} {workoutsTimes[i].time}</WorkoutItem>) }
+                          { workouts.map((item: any, i: number) => <WorkoutItem onClick={() => setWorkout(item)} active={!!(workout && workout.id === item.id)} key={i}>{workouts.length - i}: {workoutsTimes[i].date} {workoutsTimes[i].time}</WorkoutItem>) }
                       </AllWorkouts></WorkoutsPlaceholder>
                       <RightSideWrapper>
                           <MapShadow/>

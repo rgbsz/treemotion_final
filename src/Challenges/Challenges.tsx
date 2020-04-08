@@ -14,14 +14,15 @@ import Button from '../global/components/Button'
 import BronzeIcon from '../global/img/BronzeIcon'
 import SilverIcon from '../global/img/SilverIcon'
 import GoldIcon from '../global/img/GoldIcon'
+import StateTypes from "../redux/types"
 
 const Challenges: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
-    const accessToken = useSelector((state: any) => state.accessToken)
-    const user = useSelector((state: any) => state.user)
-    const allChallenges = useSelector((state: any) => state.allChallenges)
-    const futureChallenges = useSelector((state: any) => state.futureChallenges)
-    const currentChallenge = useSelector((state: any) => state.currentChallenge)
+    const accessToken = useSelector((state: StateTypes) => state.accessToken)
+    const user = useSelector((state: StateTypes) => state.user)
+    const allChallenges = useSelector((state: StateTypes) => state.allChallenges)
+    const futureChallenges = useSelector((state: StateTypes) => state.futureChallenges)
+    const currentChallenge = useSelector((state: StateTypes) => state.currentChallenge)
     const dispatch = useDispatch()
     const [joinChallengeData, setJoinChallengeData] = useState<any>(null)
     const [joinChallengeModalActive, setJoinChallengeModalActive] = useState<boolean>(false)
@@ -53,16 +54,12 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             if (res.success) {
               if(!currentChallenge) {
                 dispatch(setCurrentChallenge(res.challenge))
-                const newAllChallenges = allChallenges.filter(function(obj: any) {
-                    return obj.id !== joinChallengeData.id;
-                });
-                dispatch(setAllChallenges(newAllChallenges))
+                const newAllChallenges = allChallenges && allChallenges.filter((challenge: any) => challenge.id !== joinChallengeData.id)
+                dispatch(newAllChallenges && setAllChallenges(newAllChallenges))
               }
               else {
-                dispatch(setFutureChallenges([...futureChallenges, res.challenge]))
-                const newAllChallenges = allChallenges.filter(function(obj: any) {
-                    return obj.id !== joinChallengeData.id;
-                });
+                dispatch(futureChallenges && setFutureChallenges([...futureChallenges, res.challenge]))
+                const newAllChallenges = allChallenges && allChallenges.filter((challenge: any) => challenge.id !== joinChallengeData.id)
                 dispatch(setAllChallenges(newAllChallenges))
               }
             }
@@ -97,14 +94,14 @@ const Challenges: React.FC<RouteComponentProps> = () => {
             const res = await query.json()
             if (res.success) {
                 if(currentChallenge && currentChallenge.challenge.id === leaveChallengeData.challenge.id) {
-                    dispatch(setFutureChallenges(futureChallenges.splice(1)))
-                    dispatch(setCurrentChallenge(futureChallenges.splice(0,1)[0]))
-                    dispatch(setAllChallenges([...allChallenges, currentChallenge.challenge]))
+                    dispatch(futureChallenges && setFutureChallenges(futureChallenges.splice(1)))
+                    dispatch(futureChallenges && setCurrentChallenge(futureChallenges.splice(0,1)[0]))
+                    dispatch(allChallenges && setAllChallenges([...allChallenges, currentChallenge.challenge]))
                 }
                 else {
-                    futureChallenges.map((challenge: any, i: number) => {
+                    futureChallenges && futureChallenges.map((challenge: any, i: number) => {
                         if(challenge.challenge.id === leaveChallengeData.challenge.id) {
-                            dispatch(setAllChallenges([...allChallenges, challenge.challenge]))
+                            dispatch(allChallenges && setAllChallenges([...allChallenges, challenge.challenge]))
                             const newFutureChallenges = futureChallenges.filter(function(obj: any) {
                                 return obj.challenge.id !== leaveChallengeData.challenge.id;
                             });
@@ -182,7 +179,7 @@ const Challenges: React.FC<RouteComponentProps> = () => {
               {!currentChallenge && <Hint>Nie masz jeszcze aktywnego wyzwania. Kliknij na wyzwanie, aby do niego dołączyć - kolejne wyzwania zostaną dodane do kolejki i będą po kolei aktywowane wraz z kończeniem wyzwań.</Hint>}
             {
               currentChallenge &&
-              <ContentItem number={currentChallenge ? 1 + allChallenges.length + futureChallenges.length : allChallenges.length + futureChallenges.length} locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
+              <ContentItem locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
                 <Locked>
                   <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
                 </Locked>
@@ -205,9 +202,9 @@ const Challenges: React.FC<RouteComponentProps> = () => {
               </ContentItem>
             }
             {
-              futureChallenges.length > 0 &&
+              futureChallenges &&
               futureChallenges.map((challenge: any) => (
-                <ContentItem number={currentChallenge ? 1 + allChallenges.length + futureChallenges.length : allChallenges.length + futureChallenges.length} locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
+                <ContentItem locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
                   <Locked>
                     <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
                   </Locked>
@@ -231,9 +228,9 @@ const Challenges: React.FC<RouteComponentProps> = () => {
               ))
             }
             {
-              allChallenges.length > 0 &&
+              allChallenges &&
               allChallenges.map((challenge: any) => (
-                <ContentItem number={currentChallenge ? 1 + allChallenges.length + futureChallenges.length : allChallenges.length + futureChallenges.length} locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
+                <ContentItem locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
                   <Locked>
                     <span>{currentChallenge ? 'Kliknij, aby dodać do kolejki' : 'Kliknij, aby dołączyć'}</span>
                   </Locked>
@@ -335,7 +332,7 @@ const JoinChallengeButtons = styled.div`
     display: flex;
 `
 
-const ContentItem = styled.div<{ locked: boolean, number?: number }>`
+const ContentItem = styled.div<{ locked: boolean }>`
     padding: 1rem;
     background: white;
     border-radius: 4px;

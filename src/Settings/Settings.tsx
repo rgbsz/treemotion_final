@@ -11,6 +11,8 @@ import TextField from '../global/components/TextField'
 import Button from '../global/components/Button'
 import Select from '../global/components/Select'
 import { setUser } from '../redux/actions'
+import store from "../store"
+import StateTypes from "../redux/types"
 
 type dataErrorsTypes = {
   firstName: string[],
@@ -24,8 +26,8 @@ const Settings: React.FC<RouteComponentProps> = () => {
     const cities = [{id: 1, name: 'Rybnik'}, {id: 2, name: 'Gliwice'}, {id: 3, name: 'Zabrze'}]
 
     const [request, setRequest] = useState<boolean>(false)
-    const accessToken = useSelector((state: any) => state.accessToken)
-    const user = useSelector((state: any) => state.user)
+    const accessToken = useSelector((state: StateTypes) => state.accessToken)
+    const user = useSelector((state: StateTypes) => state.user)
     useEffect(() => {
         if(!accessToken) fetchAccessToken()
         else if(!user) fetchUser(accessToken)
@@ -47,9 +49,9 @@ const Settings: React.FC<RouteComponentProps> = () => {
                 {
                     method: 'PUT',
                     body: JSON.stringify({
-                        firstName: name !== null ? name : user.name,
-                        email: email !== null ? email : user.email,
-                        city: city !== null ? city : user.city.id
+                        firstName: user && (name !== null ? name : user.name),
+                        email: user && (email !== null ? email : user.email),
+                        city: user && (city !== null ? city : user.city.id)
                     }),
                     headers: { 'Content-type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
                 },
@@ -65,7 +67,7 @@ const Settings: React.FC<RouteComponentProps> = () => {
                 setDataSuccess('Dane zaktualizowane pomyślnie.')
                 const resultCity = res.result.city === 1 ? {id: 1, name: 'Rybnik'} : res.result.city === 2 ? {id: 2, name: 'Gliwice'} : {id: 3, name: 'Zabrze'}
                 setLoading_1(false)
-                dispatch(setUser(res.result.firstName, res.result.email, resultCity, res.result.isAdmin))
+                dispatch(user && setUser({name: res.user.firstName, email: res.user.email, city: {id: resultCity.id, name: resultCity.name}, isAdmin: res.user.isAdmin}))
             }
         } catch(e) {
             console.log(`Error: ${e.message}`)
@@ -121,7 +123,7 @@ const Settings: React.FC<RouteComponentProps> = () => {
       e.preventDefault()
       setLoading_3(true)
       if(!deleteEmail) setDeleteAccountError('To pole nie może być puste.')
-      else if(deleteEmail !== user.email) setDeleteAccountError('E-mail jest nieprawidłowy.')
+      else if(user && (deleteEmail !== user.email)) setDeleteAccountError('E-mail jest nieprawidłowy.')
       else {
         setDeleteAccountError('Uwaga: konto zostanie usunięte!')
         setModal(true)
@@ -157,7 +159,7 @@ const Settings: React.FC<RouteComponentProps> = () => {
           setDeleteAccountError(null)
         }
     }
-    if(request) {
+    if(request && user) {
         return (
             <Container>
                 <Helmet>
@@ -179,7 +181,7 @@ const Settings: React.FC<RouteComponentProps> = () => {
                             />
                         </div>
                         <div>
-                            <Note loading={`${loading_1}`} error={dataErrors} success={dataSuccess}>
+                            <Note loading={loading_1} error={dataErrors} success={dataSuccess}>
                               {dataErrors && dataErrors.firstName.map((error: string) => <p key={error}>{error}</p>)}
                               {dataErrors && dataErrors.email.map((error: string) => <p key={error}>{error}</p>)}
                               {dataSuccess && dataSuccess}
@@ -197,7 +199,7 @@ const Settings: React.FC<RouteComponentProps> = () => {
                           <StyledTextField className='styledTextField' type='password' placeholder='Nowe hasło' onInput={(e: string) => setNewPassword(e)} processing={loading_2}/>
                           <StyledTextField className='styledTextField' type='password' placeholder='Powtórz nowe hasło' onInput={(e: string) => setConfirmPassword(e)} processing={loading_2}/>
                         </div>
-                        <Note loading={`${loading_2}`} error={passwordError} success={passwordSuccess}>
+                        <Note loading={loading_2} error={passwordError} success={passwordSuccess}>
                           {passwordError && passwordError}
                           {passwordSuccess && passwordSuccess}
                         </Note>
@@ -208,14 +210,14 @@ const Settings: React.FC<RouteComponentProps> = () => {
                         />
                     </Form>
                     <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleDeleteAccountVerification(e)}>
-                        <Note loading={`${loading_3}`}>
+                        <Note loading={loading_3}>
                           Aby usunąć swoje konto, przepisz swój adres e-mail:
                         </Note>
                         <Email loading={loading_3}>{user.email}</Email>
                         <div>
                           <StyledTextField className='styledTextField' type='text' placeholder='Adres e-mail' onInput={(e: string) => setDeleteEmail(e)} processing={loading_3}/>
                         </div>
-                        <Note loading={`${loading_3}`} error={deleteAccountError}>
+                        <Note loading={loading_3} error={deleteAccountError}>
                           {deleteAccountError && deleteAccountError}
                           {!deleteAccountError && 'Uwaga: Konto zostanie bezpowrotnie usunięte.'}
                         </Note>
@@ -277,11 +279,11 @@ const Form = styled.form({
     position: 'relative'
 })
 
-const Note = styled.span<{ loading: string, error?: null | string | dataErrorsTypes, success?: null | string }>`
+const Note = styled.span<{ loading: boolean, error?: null | string | dataErrorsTypes, success?: null | string }>`
     margin-top: 1rem;
     text-align: center;
     font-size: .8rem;
-    color: ${props => props.loading === 'true' ? '#cccccc' : props.error ? 'red' : props.success ? 'green' : 'black'};
+    color: ${props => props.loading ? '#cccccc' : props.error ? 'red' : props.success ? 'green' : 'black'};
     display: flex;
     flex-direction: column;
     align-items: center;

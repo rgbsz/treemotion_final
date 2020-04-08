@@ -11,14 +11,14 @@ import TopPanel from '../global/components/TopPanel'
 import BronzeIcon from '../global/img/BronzeIcon'
 import SilverIcon from '../global/img/SilverIcon'
 import GoldIcon from '../global/img/GoldIcon'
+import StateTypes from "../redux/types"
 
 const Rankings: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
-    const accessToken = useSelector((state: any) => state.accessToken)
-    const user = useSelector((state: any) => state.user)
-    const usersRanking = useSelector((state: any) => state.usersRanking)
-    const citiesRanking = useSelector((state: any) => state.citiesRanking)
-    console.log(usersRanking)
+    const accessToken = useSelector((state: StateTypes) => state.accessToken)
+    const user = useSelector((state: StateTypes) => state.user)
+    const usersRanking = useSelector((state: StateTypes) => state.usersRanking)
+    const citiesRanking = useSelector((state: StateTypes) => state.citiesRanking)
     useEffect(() => {
         if(!accessToken) fetchAccessToken()
         else if(!user) fetchUser(accessToken)
@@ -26,7 +26,7 @@ const Rankings: React.FC<RouteComponentProps> = () => {
         else if(!citiesRanking) fetchCitiesRanking()
         else setRequest(true)
     }, [accessToken, usersRanking, citiesRanking, user])
-    if(request) {
+    if(request && usersRanking && citiesRanking) {
         return (
             <Container>
             <Helmet>

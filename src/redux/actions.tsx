@@ -1,4 +1,6 @@
-export const setAccessToken = (token: string) => {
+import StateTypes from "./types"
+
+export const setAccessToken = (token: StateTypes['accessToken']) => {
     return {
         type: 'SET_ACCESS_TOKEN',
         payload: {
@@ -13,14 +15,11 @@ export const deleteAccessToken = () => {
     }
 }
 
-export const setUser = (name: string, email: string, city: any, isAdmin: boolean) => {
+export const setUser = (user: StateTypes['user']) => {
     return {
         type: 'SET_USER',
         payload: {
-            name,
-            email,
-            city,
-            isAdmin
+            user
         }
     }
 }
@@ -31,7 +30,7 @@ export const deleteUser = () => {
     }
 }
 
-export const setWorkouts = (workouts: any) => {
+export const setWorkouts = (workouts: StateTypes['workouts']) => {
     return {
         type: 'SET_WORKOUTS',
         payload: {
@@ -46,16 +45,7 @@ export const deleteWorkouts = () => {
     }
 }
 
-type challengeTypes = {
-  challenge: {
-    id: number,
-    name: string,
-    distance: number,
-    userDistance?: number
-  }
-}
-
-export const setAllChallenges = (challenges: challengeTypes[]) => {
+export const setAllChallenges = (challenges: StateTypes['allChallenges']) => {
     return {
         type: 'SET_ALL_CHALLENGES',
         payload: {
@@ -64,7 +54,7 @@ export const setAllChallenges = (challenges: challengeTypes[]) => {
     }
 }
 
-export const setFutureChallenges = (challenges: challengeTypes[]) => {
+export const setFutureChallenges = (challenges: StateTypes['futureChallenges']) => {
     return {
         type: 'SET_FUTURE_CHALLENGES',
         payload: {
@@ -73,7 +63,7 @@ export const setFutureChallenges = (challenges: challengeTypes[]) => {
     }
 }
 
-export const setCurrentChallenge = (challenge: challengeTypes | null) => {
+export const setCurrentChallenge = (challenge: StateTypes['currentChallenge']) => {
     return {
         type: 'SET_CURRENT_CHALLENGE',
         payload: {

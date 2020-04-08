@@ -30,7 +30,7 @@ export const fetchUser = async (accessToken: string) => {
         )
         const res = await query.json()
         console.log(res)
-        store.dispatch(setUser(res.user.firstName, res.user.email, res.user.city, res.user.isAdmin))
+        store.dispatch(setUser({name: res.user.firstName, email: res.user.email, city: res.user.city, isAdmin: res.user.isAdmin}))
     }
     catch(e) {
         console.log(e.message)

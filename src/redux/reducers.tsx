@@ -16,10 +16,10 @@ const user = (state = null, action: any) => {
         case 'SET_USER':
             return {
                 state,
-                name: action.payload.name,
-                email: action.payload.email,
-                city: action.payload.city,
-                isAdmin: action.payload.isAdmin
+                name: action.payload.user.name,
+                email: action.payload.user.email,
+                city: action.payload.user.city,
+                isAdmin: action.payload.user.isAdmin
             }
         case 'DELETE_USER':
             return null
