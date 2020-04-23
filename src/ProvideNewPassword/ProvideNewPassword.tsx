@@ -7,10 +7,11 @@ import TextField from './components/TextField'
 import Button from './components/Button'
 import Image from './img/sign_in.jpg'
 
+
 const ProvideNewPassword: React.FC<RouteComponentProps> = () => {
     let history = useHistory()
-    const texts = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość']
-    const [slide, setSlide] = useState(1)
+    const texts: string[] = ['Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość', 'Lass deine Zukunft aus', 'あなたの未来を使い果たす', 'Agota tu futuro', 'Run out your future', 'Wybiegaj swoją przyszłość', 'Wybiegaj swoją przyszłość']
+    const [slide, setSlide] = useState<number>(1)
     setTimeout(() => {
       if(slide !== 6) {
         setSlide(slide + 1)
@@ -71,14 +72,14 @@ const ProvideNewPassword: React.FC<RouteComponentProps> = () => {
                 </Error>
                 <FormBottom>
                     <Button
-                        text='Save changes'
+                        text='Zapisz hasło'
                         loading={loading}
                     />
                     <OtherAction
                         to={`/sign-in`}
                         loading={`${loading}`}
                     >
-                        Go back
+                        Wróć
                     </OtherAction>
                 </FormBottom>
             </Form>
@@ -101,6 +102,9 @@ const Container = styled.div`
     grid-template-columns: 1fr 2fr;
     position: relative;
     background: white;
+    @media only screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
 `
 
 const Form = styled.form`
@@ -179,6 +183,9 @@ const Picture = styled.div<{ slide: number }>`
           }
         }
       }
+    }
+    @media only screen and (max-width: 768px) {
+      display: none;
     }
 `
 

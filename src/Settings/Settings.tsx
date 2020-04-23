@@ -13,6 +13,7 @@ import Select from '../global/components/Select'
 import { setUser } from '../redux/actions'
 import store from "../store"
 import StateTypes from "../redux/types"
+import MobileContainer from "../global/components/MobileContainer"
 
 type dataErrorsTypes = {
   firstName: string[],
@@ -161,89 +162,92 @@ const Settings: React.FC<RouteComponentProps> = () => {
     }
     if(request && user) {
         return (
-            <Container>
-                <Helmet>
-                    <title>Treemotion | Ustawienia</title>
-                </Helmet>
-                <NavigationPanel/>
-                <TopPanel/>
-                <Content>
-                    <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleSaveData(e)}>
-                        <div>
-                            <StyledTextField className='styledTextField' type='text' placeholder='Imię' defaultValue={user.name} onInput={(e: string) => setName(e)} processing={loading_1}/>
-                            <StyledTextField className='styledTextField' type='text' placeholder='Adres e-mail' defaultValue={user.email} onInput={(e: string) => setEmail(e)} processing={loading_1}/>
-                            <StyledSelect
-                                className='styledSelect'
-                                placeholder='Miasto'
+            <>
+                <Container>
+                    <Helmet>
+                        <title>Treemotion | Ustawienia</title>
+                    </Helmet>
+                    <NavigationPanel/>
+                    <TopPanel/>
+                    <Content>
+                        <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleSaveData(e)}>
+                            <div>
+                                <StyledTextField className='styledTextField' type='text' placeholder='Imię' defaultValue={user.name} onInput={(e: string) => setName(e)} processing={loading_1}/>
+                                <StyledTextField className='styledTextField' type='text' placeholder='Adres e-mail' defaultValue={user.email} onInput={(e: string) => setEmail(e)} processing={loading_1}/>
+                                <StyledSelect
+                                    className='styledSelect'
+                                    placeholder='Miasto'
+                                    loading={loading_1}
+                                    options={user ? [user.city, ...cities.filter(function(el: any) { return el.id !== user.city.id; })] : cities}
+                                    onInput={(e: number) => setCity(e)}
+                                />
+                            </div>
+                            <div>
+                                <Note loading={loading_1} error={dataErrors} success={dataSuccess}>
+                                    {dataErrors && dataErrors.firstName.map((error: string) => <p key={error}>{error}</p>)}
+                                    {dataErrors && dataErrors.email.map((error: string) => <p key={error}>{error}</p>)}
+                                    {dataSuccess && dataSuccess}
+                                </Note>
+                            </div>
+                            <StyledButton
+                                className='styledButton'
+                                text='Zapisz zmiany'
                                 loading={loading_1}
-                                options={user ? [user.city, ...cities.filter(function(el: any) { return el.id !== user.city.id; })] : cities}
-                                onInput={(e: number) => setCity(e)}
                             />
-                        </div>
-                        <div>
-                            <Note loading={loading_1} error={dataErrors} success={dataSuccess}>
-                              {dataErrors && dataErrors.firstName.map((error: string) => <p key={error}>{error}</p>)}
-                              {dataErrors && dataErrors.email.map((error: string) => <p key={error}>{error}</p>)}
-                              {dataSuccess && dataSuccess}
+                        </Form>
+                        <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleSavePassword(e)}>
+                            <div>
+                                <StyledTextField className='styledTextField' type='password' placeholder='Stare hasło' onInput={(e: string) => setPassword(e)} processing={loading_2}/>
+                                <StyledTextField className='styledTextField' type='password' placeholder='Nowe hasło' onInput={(e: string) => setNewPassword(e)} processing={loading_2}/>
+                                <StyledTextField className='styledTextField' type='password' placeholder='Powtórz nowe hasło' onInput={(e: string) => setConfirmPassword(e)} processing={loading_2}/>
+                            </div>
+                            <Note loading={loading_2} error={passwordError} success={passwordSuccess}>
+                                {passwordError && passwordError}
+                                {passwordSuccess && passwordSuccess}
                             </Note>
-                        </div>
-                        <StyledButton
-                            className='styledButton'
-                            text='Zapisz zmiany'
-                            loading={loading_1}
-                        />
-                    </Form>
-                    <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleSavePassword(e)}>
-                        <div>
-                          <StyledTextField className='styledTextField' type='password' placeholder='Stare hasło' onInput={(e: string) => setPassword(e)} processing={loading_2}/>
-                          <StyledTextField className='styledTextField' type='password' placeholder='Nowe hasło' onInput={(e: string) => setNewPassword(e)} processing={loading_2}/>
-                          <StyledTextField className='styledTextField' type='password' placeholder='Powtórz nowe hasło' onInput={(e: string) => setConfirmPassword(e)} processing={loading_2}/>
-                        </div>
-                        <Note loading={loading_2} error={passwordError} success={passwordSuccess}>
-                          {passwordError && passwordError}
-                          {passwordSuccess && passwordSuccess}
-                        </Note>
-                        <StyledButton
-                            className='styledButton'
-                            text='Zapisz zmiany'
-                            loading={loading_2}
-                        />
-                    </Form>
-                    <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleDeleteAccountVerification(e)}>
-                        <Note loading={loading_3}>
-                          Aby usunąć swoje konto, przepisz swój adres e-mail:
-                        </Note>
-                        <Email loading={loading_3}>{user.email}</Email>
-                        <div>
-                          <StyledTextField className='styledTextField' type='text' placeholder='Adres e-mail' onInput={(e: string) => setDeleteEmail(e)} processing={loading_3}/>
-                        </div>
-                        <Note loading={loading_3} error={deleteAccountError}>
-                          {deleteAccountError && deleteAccountError}
-                          {!deleteAccountError && 'Uwaga: Konto zostanie bezpowrotnie usunięte.'}
-                        </Note>
-                        <StyledButton
-                            className='styledButton'
-                            text='Usuń konto'
-                            loading={loading_3}
-                        />
-                    </Form>
-                </Content>
-                <DeleteAccountModal active={modal}>
-                  <PopUp>
-                    <h1>Czy na pewno chcesz usunąć swoje konto?</h1>
-                    <p>
-                      <Button onClick={() => handleDeleteAccount(false)}
-                          className='styledButton'
-                          text='Nie usuwaj'
-                          loading={loading_3}
-                      />
-                      <DeleteAccountButton onClick={() => handleDeleteAccount(true)}>
-                          Usuń konto
-                      </DeleteAccountButton>
-                    </p>
-                  </PopUp>
-                </DeleteAccountModal>
-            </Container>
+                            <StyledButton
+                                className='styledButton'
+                                text='Zapisz zmiany'
+                                loading={loading_2}
+                            />
+                        </Form>
+                        <Form onSubmit={(e: FormEvent<HTMLFormElement>) => handleDeleteAccountVerification(e)}>
+                            <Note loading={loading_3}>
+                                Aby usunąć swoje konto, przepisz swój adres e-mail:
+                            </Note>
+                            <Email loading={loading_3}>{user.email}</Email>
+                            <div>
+                                <StyledTextField className='styledTextField' type='text' placeholder='Adres e-mail' onInput={(e: string) => setDeleteEmail(e)} processing={loading_3}/>
+                            </div>
+                            <Note loading={loading_3} error={deleteAccountError}>
+                                {deleteAccountError && deleteAccountError}
+                                {!deleteAccountError && 'Uwaga: Konto zostanie bezpowrotnie usunięte.'}
+                            </Note>
+                            <StyledButton
+                                className='styledButton'
+                                text='Usuń konto'
+                                loading={loading_3}
+                            />
+                        </Form>
+                    </Content>
+                    <DeleteAccountModal active={modal}>
+                        <PopUp>
+                            <h1>Czy na pewno chcesz usunąć swoje konto?</h1>
+                            <p>
+                                <Button onClick={() => handleDeleteAccount(false)}
+                                        className='styledButton'
+                                        text='Nie usuwaj'
+                                        loading={loading_3}
+                                />
+                                <DeleteAccountButton onClick={() => handleDeleteAccount(true)}>
+                                    Usuń konto
+                                </DeleteAccountButton>
+                            </p>
+                        </PopUp>
+                    </DeleteAccountModal>
+                </Container>
+                <MobileContainer/>
+            </>
         )
     }
     else return <LoadingScreen />
@@ -255,6 +259,9 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: 18rem auto;
     grid-template-rows: 5rem auto;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
 `
 
 const Content = styled.div({

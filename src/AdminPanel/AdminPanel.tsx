@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { RouteComponentProps, withRouter, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchAccessToken, fetchUser, removeRedux } from '../global/functions'
-import { fetchChallenges } from '../Challenges/functions'
+import { fetchAdminChallenges } from '../Challenges/functions'
 import LoadingScreen from '../global/components/LoadingScreen'
 import NavigationPanel from './NavigationPanel'
 import TopPanel from './TopPanel'
@@ -12,28 +12,33 @@ import Button from '../global/components/Button'
 import BronzeIcon from '../global/img/BronzeIcon'
 import SilverIcon from '../global/img/SilverIcon'
 import GoldIcon from '../global/img/GoldIcon'
-import { setAllChallenges, setFutureChallenges, setCurrentChallenge } from '../redux/actions'
+import { setAllChallenges } from '../redux/actions'
+import MobileContainer from "../global/components/MobileContainer"
 
 const AdminPanel: React.FC<RouteComponentProps> = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const accessToken = useSelector((state: any) => state.accessToken)
     const user = useSelector((state: any) => state.user)
-    const allChallenges = useSelector((state: any) => state.allChallenges)
-    const futureChallenges = useSelector((state: any) => state.futureChallenges)
-    const currentChallenge = useSelector((state: any) => state.currentChallenge)
+    const [allChallenges, setAllChallenges] = useState<any>(null)
     const [request, setRequest] = useState<boolean>(false)
     useEffect(() => {
-        if(!accessToken) fetchAccessToken()
-        else if(!user) fetchUser(accessToken)
-        else if(!user.isAdmin) {
-          localStorage.removeItem('refreshToken');
-          history.push('/sign-in');
-          removeRedux()
+        async function UseEffect() {
+            if(!accessToken) fetchAccessToken()
+            else if(!user) fetchUser(accessToken)
+            else if(!user.isAdmin) {
+                localStorage.removeItem('refreshToken');
+                history.push('/sign-in');
+                removeRedux()
+            }
+            else if(!allChallenges) {
+                const newAllChallenges = await fetchAdminChallenges()
+                setAllChallenges(newAllChallenges)
+            }
+            else setRequest(true)
         }
-        else if(!allChallenges) fetchChallenges(accessToken)
-        else setRequest(true)
-    }, [accessToken, user, allChallenges, futureChallenges, currentChallenge])
+        UseEffect()
+    }, [accessToken, user, allChallenges])
 
     const [addChallengeModal, setAddChallengeModal] = useState<boolean>(false)
     const [addChallengeName, setAddChallengeName] = useState<null | string>(null)
@@ -44,7 +49,6 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
         setAddChallengeRequest(true)
         try {
             e.preventDefault()
-
             const query = await fetch(
                 'https://treemotion.herokuapp.com/challenge/create',
                 {
@@ -63,12 +67,12 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
             }
             else {
                 dispatch(setAllChallenges([res.challenge, ...allChallenges]))
-                setAddChallengeModal(false)
             }
         } catch(e) {
             console.log(`Error: ${e.message}`)
         }
         setAddChallengeRequest(false)
+        setAddChallengeModal(false)
     }
     const [removeChallengeRequest, setRemoveChallengeRequest] = useState<boolean>(false)
     async function handleRemoveChallenge(e: any, id: number, type: string) {
@@ -91,21 +95,10 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
               alert('Błąd')
           }
           else {
-              if(type === 'future') {
-                const newFutureChallenges = futureChallenges.filter(function(obj: any) {
-                    return obj.challenge.id !== id;
-                });
-                dispatch(setFutureChallenges(newFutureChallenges))
-              }
-              else if(type === 'current') {
-                dispatch(setCurrentChallenge(null))
-              }
-              else {
-                const newAllChallenges = allChallenges.filter(function(obj: any) {
-                    return obj.id !== id;
-                });
-                dispatch(setAllChallenges(newAllChallenges))
-              }
+            const newAllChallenges = allChallenges.filter(function(obj: any) {
+                return obj.id !== id;
+            });
+            setAllChallenges(newAllChallenges)
           }
       } catch(e) {
           console.log(`Error: ${e.message}`)
@@ -113,53 +106,54 @@ const AdminPanel: React.FC<RouteComponentProps> = () => {
     }
     if(request) {
         return (
-            <Container>
-                <Helmet>
-                    <title>Treemotion | Panel admina</title>
-                </Helmet>
-                <NavigationPanel/>
-                <TopPanel/>
-                <AddChallengeModal active={addChallengeModal}>
-                    <AddChallengeItem locked={false}>
-                      <input type='text' placeholder='Wprowadź nazwę wyzwania' onInput={e => setAddChallengeName((e.target as HTMLInputElement).value)}/>
-                      <Bar>
-                        <ProgressBar locked={null}/>
-                        <Part>
-                          <BronzeIcon/>
-                          <Score>{addChallengeScore ? typeof(addChallengeScore) === 'number' ? Math.floor(.3 * addChallengeScore) : '' : ''}</Score>
-                        </Part>
-                        <Part>
-                          <SilverIcon/>
-                          <Score>{addChallengeScore ? typeof(addChallengeScore) === 'number' ? Math.floor(.6 * addChallengeScore) : '' : ''}</Score>
-                        </Part>
-                        <Part>
-                          <GoldIcon/>
-                          <input type='text' placeholder='Dystans' onInput={e => setAddChallengeScore(parseInt((e.target as HTMLInputElement).value))}/>
-                        </Part>
-                      </Bar>
-                    </AddChallengeItem>
-                    <AddChallengeButtons>
-                        <StyledButton text='Dodaj wyzwanie' loading={addChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleAddChallenge(e)}/>
-                        <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setAddChallengeModal(!addChallengeModal)}/>
-                    </AddChallengeButtons>
-                </AddChallengeModal>
-                <Content>
-                    <Challenges>
-                        <AddChallengeButton text='Dodaj wyzwanie' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
-                        <List>
-                            {currentChallenge && <Challenge>{currentChallenge.challenge.name}<Button text='Usuń' loading={false} onClick={(e: any) => handleRemoveChallenge(e, currentChallenge.challenge.id, 'current')}/></Challenge>}
-                            {futureChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.challenge.name}<Button text='Usuń' loading={false} onClick={(e: any) => handleRemoveChallenge(e, challenge.challenge.id, 'future')}/></Challenge>)}
-                            {allChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}<Button text='Usuń' loading={false} onClick={(e: any) => handleRemoveChallenge(e, challenge.id, 'all')}/></Challenge>)}
-                        </List>
-                    </Challenges>
-                    <Bugs>
-                        <AddChallengeButton text='Dodaj błąd' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
-                        <List>
-                            <Bug>Jakiś bug<Button text='Usuń' loading={false} onClick={(e: any) => alert('hehe')}/></Bug>
-                        </List>
-                    </Bugs>
-                </Content>
-            </Container>
+            <>
+                <Container>
+                    <Helmet>
+                        <title>Treemotion | Panel admina</title>
+                    </Helmet>
+                    <NavigationPanel/>
+                    <TopPanel/>
+                    <AddChallengeModal active={addChallengeModal}>
+                        <AddChallengeItem locked={false}>
+                            <input type='text' placeholder='Wprowadź nazwę wyzwania' onInput={e => setAddChallengeName((e.target as HTMLInputElement).value)}/>
+                            <Bar>
+                                <ProgressBar locked={null}/>
+                                <Part>
+                                    <BronzeIcon/>
+                                    <Score>{addChallengeScore ? typeof(addChallengeScore) === 'number' ? Math.floor(.3 * addChallengeScore) : '' : ''}</Score>
+                                </Part>
+                                <Part>
+                                    <SilverIcon/>
+                                    <Score>{addChallengeScore ? typeof(addChallengeScore) === 'number' ? Math.floor(.6 * addChallengeScore) : '' : ''}</Score>
+                                </Part>
+                                <Part>
+                                    <GoldIcon/>
+                                    <input type='text' placeholder='Dystans' onInput={e => setAddChallengeScore(parseInt((e.target as HTMLInputElement).value))}/>
+                                </Part>
+                            </Bar>
+                        </AddChallengeItem>
+                        <AddChallengeButtons>
+                            <StyledButton text='Dodaj wyzwanie' loading={addChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleAddChallenge(e)}/>
+                            <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setAddChallengeModal(!addChallengeModal)}/>
+                        </AddChallengeButtons>
+                    </AddChallengeModal>
+                    <Content>
+                        <Challenges>
+                            <AddChallengeButton text='Dodaj wyzwanie' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
+                            <List>
+                                {allChallenges.map((challenge: any, i: number) => <Challenge key={i}>{challenge.name}<Button text='Usuń' loading={false} onClick={(e: any) => handleRemoveChallenge(e, challenge.id, 'all')}/></Challenge>)}
+                            </List>
+                        </Challenges>
+                        <Bugs>
+                            <AddChallengeButton text='Dodaj błąd' loading={false} onClick={() => setAddChallengeModal(!addChallengeModal)}/>
+                            <List>
+                                <Bug>Jakiś bug<Button text='Usuń' loading={false} onClick={(e: any) => alert('hehe')}/></Bug>
+                            </List>
+                        </Bugs>
+                    </Content>
+                </Container>
+                <MobileContainer/>
+            </>
         )
     }
     else return <LoadingScreen />
@@ -171,6 +165,9 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: 18rem auto;
     grid-template-rows: 5rem auto;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
 `
 
 const Content = styled.div({

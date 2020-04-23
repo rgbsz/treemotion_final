@@ -8,6 +8,7 @@ import Select from './components/Select'
 import Button from './components/Button'
 import Radio from '../global/components/Radio'
 import Image from './img/sign_in.jpg'
+import MobileContainer from "../global/components/MobileContainer"
 
 const SignUp: React.FC<RouteComponentProps> = () => {
     const history = useHistory()
@@ -64,72 +65,75 @@ const SignUp: React.FC<RouteComponentProps> = () => {
         }
     }
     return (
-        <Container>
-            <Helmet>
-                <title>Treemotion | Rejestracja</title>
-            </Helmet>
-            <Form onSubmit={(e: any) => SignUp(e)}>
-                <TextField
-                    type="text"
-                    placeholder='Imię'
-                    onInput={(e: string) => setFirstName(e)}
-                    processing={loading}
-                />
-                <TextField
-                    type="text"
-                    placeholder='Adres e-mail'
-                    onInput={(e: string) => setEmail(e)}
-                    processing={loading}
-                />
-                <TextField
-                    type="password"
-                    placeholder='Hasło'
-                    onInput={(e: string) => setPassword(e)}
-                    processing={loading}
-                />
-                <TextField
-                    type="password"
-                    placeholder='Powtórz hasło'
-                    onInput={(e: string) => setRepeatPassword(e)}
-                    processing={loading}
-                />
-                <Select
-                    placeholder="Miasto"
-                    loading={loading}
-                    options={[{id: 0, name: 'Wybierz miasto'}, {id: 1, name: 'Rybnik'}, {id: 2, name: 'Gliwice'}, {id: 3, name: 'Zabrze'}]}
-                    onInput={(e: number) => setCity(e)}
-                />
-                <Radio onClick={(e: boolean) => setRegulationsAccepted(e)}/>
-                <Errors loading={`${loading}`}>
-                    {errors && <p>{errors.regulations}</p>}
-                    {errors && <p>{errors.firstName}</p>}
-                    {errors && errors.email.map((error: string) => <p>{error}</p>)}
-                    {errors && errors.password.map((error: string) => <p>{error}</p>)}
-                    {errors && errors.repeatPassword.map((error: string) => <p>{error}</p>)}
-                    {errors && errors.city.map((error: string) => <p>{error}</p>)}
-                </Errors>
-                <FormBottom>
-                    <Button
-                        text='Utwórz konto'
-                        loading={loading}
+        <>
+            <Container>
+                <Helmet>
+                    <title>Treemotion | Rejestracja</title>
+                </Helmet>
+                <Form onSubmit={(e: any) => SignUp(e)}>
+                    <TextField
+                        type="text"
+                        placeholder='Imię'
+                        onInput={(e: string) => setFirstName(e)}
+                        processing={loading}
                     />
-                    <OtherAction
-                        to={`/sign-in`}
-                        loading={`${loading}`}
-                    >
-                        Mam już konto
-                    </OtherAction>
-                </FormBottom>
-            </Form>
-            <Picture slide={slide}>
-              <h1>Treemotion</h1>
-              <div>
-                <div>
-                  {texts.map(text => <span>{text}</span>)}
-                </div>
-              </div>
-            </Picture>
-        </Container>
+                    <TextField
+                        type="text"
+                        placeholder='Adres e-mail'
+                        onInput={(e: string) => setEmail(e)}
+                        processing={loading}
+                    />
+                    <TextField
+                        type="password"
+                        placeholder='Hasło'
+                        onInput={(e: string) => setPassword(e)}
+                        processing={loading}
+                    />
+                    <TextField
+                        type="password"
+                        placeholder='Powtórz hasło'
+                        onInput={(e: string) => setRepeatPassword(e)}
+                        processing={loading}
+                    />
+                    <Select
+                        placeholder="Miasto"
+                        loading={loading}
+                        options={[{id: 0, name: 'Wybierz miasto'}, {id: 1, name: 'Rybnik'}, {id: 2, name: 'Gliwice'}, {id: 3, name: 'Zabrze'}]}
+                        onInput={(e: number) => setCity(e)}
+                    />
+                    <Radio onClick={(e: boolean) => setRegulationsAccepted(e)}/>
+                    <Errors loading={`${loading}`}>
+                        {errors && <p>{errors.regulations}</p>}
+                        {errors && <p>{errors.firstName}</p>}
+                        {errors && errors.email.map((error: string) => <p>{error}</p>)}
+                        {errors && errors.password.map((error: string) => <p>{error}</p>)}
+                        {errors && errors.repeatPassword.map((error: string) => <p>{error}</p>)}
+                        {errors && errors.city.map((error: string) => <p>{error}</p>)}
+                    </Errors>
+                    <FormBottom>
+                        <Button
+                            text='Utwórz konto'
+                            loading={loading}
+                        />
+                        <OtherAction
+                            to={`/sign-in`}
+                            loading={`${loading}`}
+                        >
+                            Mam już konto
+                        </OtherAction>
+                    </FormBottom>
+                </Form>
+                <Picture slide={slide}>
+                    <h1>Treemotion</h1>
+                    <div>
+                        <div>
+                            {texts.map(text => <span>{text}</span>)}
+                        </div>
+                    </div>
+                </Picture>
+            </Container>
+            <MobileContainer/>
+        </>
     )
 }
 
@@ -140,6 +144,9 @@ const Container = styled.div`
     grid-template-columns: 1fr 2fr;
     position: relative;
     background: white;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
 `
 
 const Form = styled.form`

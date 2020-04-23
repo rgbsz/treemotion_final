@@ -12,6 +12,7 @@ import BronzeIcon from '../global/img/BronzeIcon'
 import SilverIcon from '../global/img/SilverIcon'
 import GoldIcon from '../global/img/GoldIcon'
 import StateTypes from "../redux/types"
+import MobileContainer from "../global/components/MobileContainer"
 
 const Rankings: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
@@ -28,35 +29,38 @@ const Rankings: React.FC<RouteComponentProps> = () => {
     }, [accessToken, usersRanking, citiesRanking, user])
     if(request && usersRanking && citiesRanking) {
         return (
-            <Container>
-            <Helmet>
-                <title>Treemotion | Rankingi</title>
-            </Helmet>
-            <TopPanel/>
-            <NavigationPanel/>
-            <Content>
-                <List_1>
-                    <TopRanking>
-                        <TopRankingItem><GoldIcon/> {usersRanking[0].firstName}</TopRankingItem>
-                        <TopRankingItem><SilverIcon/> {usersRanking[1].firstName}</TopRankingItem>
-                        <TopRankingItem><BronzeIcon/> {usersRanking[2].firstName}</TopRankingItem>
-                    </TopRanking>
-                    <ProperList>
-                        {usersRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.firstName}</ContentItem>)}
-                    </ProperList>
-                </List_1>
-                <List_2>
-                    <TopRanking>
-                        <TopRankingItem><GoldIcon/> {citiesRanking[0].name}</TopRankingItem>
-                        <TopRankingItem><SilverIcon/> {citiesRanking[1].name}</TopRankingItem>
-                        <TopRankingItem><BronzeIcon/> {citiesRanking[2].name}</TopRankingItem>
-                    </TopRanking>
-                    {/*<ProperList>*/}
-                    {/*    {citiesRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.name}</ContentItem>)}*/}
-                    {/*</ProperList>*/}
-                </List_2>
-            </Content>
-        </Container>
+            <>
+                <Container>
+                    <Helmet>
+                        <title>Treemotion | Rankingi</title>
+                    </Helmet>
+                    <TopPanel/>
+                    <NavigationPanel/>
+                    <Content>
+                        <List_1>
+                            <TopRanking>
+                                <TopRankingItem><GoldIcon/> {usersRanking[0].firstName}</TopRankingItem>
+                                <TopRankingItem><SilverIcon/> {usersRanking[1].firstName}</TopRankingItem>
+                                <TopRankingItem><BronzeIcon/> {usersRanking[2].firstName}</TopRankingItem>
+                            </TopRanking>
+                            <ProperList>
+                                {usersRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.firstName}</ContentItem>)}
+                            </ProperList>
+                        </List_1>
+                        <List_2>
+                            <TopRanking>
+                                <TopRankingItem><GoldIcon/> {citiesRanking[0].name}</TopRankingItem>
+                                <TopRankingItem><SilverIcon/> {citiesRanking[1].name}</TopRankingItem>
+                                <TopRankingItem><BronzeIcon/> {citiesRanking[2].name}</TopRankingItem>
+                            </TopRanking>
+                            {/*<ProperList>*/}
+                            {/*    {citiesRanking.map((el: any, i: number) => i > 2 && <ContentItem key={el.id}><span>{i+1}.</span> {el.name}</ContentItem>)}*/}
+                            {/*</ProperList>*/}
+                        </List_2>
+                    </Content>
+                </Container>
+                <MobileContainer/>
+            </>
         )
     }
     else return <LoadingScreen />
@@ -69,6 +73,9 @@ const Container = styled.div`
     grid-template-columns: 18rem auto;
     grid-template-rows: 5rem auto;
     position: relative;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
 `
 
 const Content = styled.div({

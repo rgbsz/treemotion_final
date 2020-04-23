@@ -8,6 +8,7 @@ import Button from './components/Button'
 import Image from './img/sign_in.jpg'
 import { useDispatch } from 'react-redux'
 import { setAccessToken } from '../redux/actions'
+import MobileContainer from "../global/components/MobileContainer"
 
 const SignIn: React.FC<RouteComponentProps> = () => {
     let history = useHistory()
@@ -52,58 +53,61 @@ const SignIn: React.FC<RouteComponentProps> = () => {
         }
     }
     return (
-        <Container>
-            <Helmet>
-                <title>Treemotion | Logowanie</title>
-            </Helmet>
-            <Form onSubmit={(e: any) => SignIn(e)}>
-                <TextField
-                    type="text"
-                    placeholder='Adres e-mail'
-                    onInput={(e: string) => setEmail(e)}
-                    processing={loading}
-                    defaultValue={localStorage.getItem('defaultEmail') ? `${localStorage.getItem('defaultEmail')}` : ''}
-                />
-                <TextField
-                    type="password"
-                    placeholder='Hasło'
-                    onInput={(e: string) => setPassword(e)}
-                    processing={loading}
-                />
-                <Note loading={`${loading}`}>
-                    {error && error}
-                    {localStorage.getItem('defaultEmail') && !localStorage.getItem('verified') ? <p>{`Prosimy o aktywację konta poprzez link wysłany na ${localStorage.getItem('defaultEmail')}`}</p> : localStorage.getItem('verified') ? <p>Twoje konto zostało aktywowane.</p> : ''}
-                </Note>
-                <FormBottom>
-                    <Button
-                        text='Zaloguj'
-                        loading={loading}
+        <>
+            <Container>
+                <Helmet>
+                    <title>Treemotion | Logowanie</title>
+                </Helmet>
+                <Form onSubmit={(e: any) => SignIn(e)}>
+                    <TextField
+                        type="text"
+                        placeholder='Adres e-mail'
+                        onInput={(e: string) => setEmail(e)}
+                        processing={loading}
+                        defaultValue={localStorage.getItem('defaultEmail') ? `${localStorage.getItem('defaultEmail')}` : ''}
                     />
-                    <ActionsContainer>
-                      <OtherAction
-                          to={`/forgotten-password`}
-                          loading={`${loading}`}
-                      >
-                          Zapomniałem hasła
-                      </OtherAction>
-                      <OtherAction
-                          to={`/sign-up`}
-                          loading={`${loading}`}
-                      >
-                          Nie mam konta
-                      </OtherAction>
-                    </ActionsContainer>
-                </FormBottom>
-            </Form>
-            <Picture slide={slide}>
-              <h1>Treemotion</h1>
-              <div>
-                <div>
-                  {texts.map((text, i) => <span key={i}>{text}</span>)}
-                </div>
-              </div>
-            </Picture>
-        </Container>
+                    <TextField
+                        type="password"
+                        placeholder='Hasło'
+                        onInput={(e: string) => setPassword(e)}
+                        processing={loading}
+                    />
+                    <Note loading={`${loading}`}>
+                        {error && error}
+                        {localStorage.getItem('defaultEmail') && !localStorage.getItem('verified') ? <p>{`Prosimy o aktywację konta poprzez link wysłany na ${localStorage.getItem('defaultEmail')}`}</p> : localStorage.getItem('verified') ? <p>Twoje konto zostało aktywowane.</p> : ''}
+                    </Note>
+                    <FormBottom>
+                        <Button
+                            text='Zaloguj'
+                            loading={loading}
+                        />
+                        <ActionsContainer>
+                            <OtherAction
+                                to={`/forgotten-password`}
+                                loading={`${loading}`}
+                            >
+                                Zapomniałem hasła
+                            </OtherAction>
+                            <OtherAction
+                                to={`/sign-up`}
+                                loading={`${loading}`}
+                            >
+                                Nie mam konta
+                            </OtherAction>
+                        </ActionsContainer>
+                    </FormBottom>
+                </Form>
+                <Picture slide={slide}>
+                    <h1>Treemotion</h1>
+                    <div>
+                        <div>
+                            {texts.map((text, i) => <span key={i}>{text}</span>)}
+                        </div>
+                    </div>
+                </Picture>
+            </Container>
+            <MobileContainer/>
+        </>
     )
 }
 
@@ -114,6 +118,9 @@ const Container = styled.div`
     grid-template-columns: 1fr 2fr;
     position: relative;
     background: white;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
 `
 
 const Form = styled.form`

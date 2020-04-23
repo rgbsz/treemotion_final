@@ -13,6 +13,7 @@ import RoadIcon from '../global/img/RoadIcon'
 import SpeedometerIcon from '../global/img/SpeedometerIcon'
 import TimeIcon from '../global/img/TimeIcon'
 import StateTypes from "../redux/types"
+import MobileContainer from "../global/components/MobileContainer"
 
 const Map = withScriptjs(withGoogleMap((props: any) => {
     return (
@@ -81,53 +82,56 @@ const Workouts: React.FC<RouteComponentProps> = () => {
     }, [accessToken, workouts, user])
     if(request) {
         return (
-            <Container>
-                <Helmet>
-                    <title>Treemotion | Treningi</title>
-                </Helmet>
-                <NavigationPanel/>
-                <TopPanel/>
-                {
-                  workouts && workouts.length > 0 ?
-                  <Content>
-                      <WorkoutsPlaceholder>
-                      <AllWorkouts>
-                          { workouts.map((item: any, i: number) => <WorkoutItem onClick={() => setWorkout(item)} active={!!(workout && workout.id === item.id)} key={i}>{workouts.length - i}: {workoutsTimes[i].date} {workoutsTimes[i].time}</WorkoutItem>) }
-                      </AllWorkouts></WorkoutsPlaceholder>
-                      <RightSideWrapper>
-                          <MapShadow/>
-                          <Map
-                              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWHBcMGuZCg4WEhTKJTchBv3oxN11KoTo&v=3.exp&libraries=geometry"
-                              loadingElement={<div style={{ height: `50vh` }} />}
-                              containerElement={<div style={{ height: `50vh` }} />}
-                              mapElement={<div style={{ height: `50vh` }} />}
-                              workout={workout}
-                          />
-                          <Description>
-                              {!workout ? <p>Nie wybrano treningu</p> :
-                              <>
-                              <DescriptionItem>
-                                  <RoadIcon/>
-                                  {workout && <span>{workout.distance > 1000 ? `${Math.floor(((workout.distance / 100) * 100) / 100)}km` : `${workout.distance}m`}</span>}
-                              </DescriptionItem>
-                              <DescriptionItem>
-                                  <SpeedometerIcon/>
-                                  {workout && <span>{workout.avgSpeed}km/h</span>}
-                              </DescriptionItem>
-                              <DescriptionItem>
-                                  <TimeIcon/>
-                                  {workout && <span>{workout.duration / 60 > 60 ? `${Math.floor((workout.duration / 3600) * 100) / 100}h` : workout.duration / 60 < 1 ?  `${workout.duration}s` : `${Math.floor((workout.duration / 60) * 100) / 100} min`}</span>}
-                              </DescriptionItem>
-                            </>}
-                          </Description>
-                      </RightSideWrapper>
-                  </Content>
-                  :
-                  <NoWorkouts>
-                      Nie masz żadnych treningów.
-                  </NoWorkouts>
-                }
-            </Container>
+            <>
+                <Container>
+                    <Helmet>
+                        <title>Treemotion | Treningi</title>
+                    </Helmet>
+                    <NavigationPanel/>
+                    <TopPanel/>
+                    {
+                        workouts && workouts.length > 0 ?
+                            <Content>
+                                <WorkoutsPlaceholder>
+                                    <AllWorkouts>
+                                        { workouts.map((item: any, i: number) => <WorkoutItem onClick={() => setWorkout(item)} active={!!(workout && workout.id === item.id)} key={i}>{workouts.length - i}: {workoutsTimes[i].date} {workoutsTimes[i].time}</WorkoutItem>) }
+                                    </AllWorkouts></WorkoutsPlaceholder>
+                                <RightSideWrapper>
+                                    <MapShadow/>
+                                    <Map
+                                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAWHBcMGuZCg4WEhTKJTchBv3oxN11KoTo&v=3.exp&libraries=geometry"
+                                        loadingElement={<div style={{ height: `50vh` }} />}
+                                        containerElement={<div style={{ height: `50vh` }} />}
+                                        mapElement={<div style={{ height: `50vh` }} />}
+                                        workout={workout}
+                                    />
+                                    <Description>
+                                        {!workout ? <p>Nie wybrano treningu</p> :
+                                            <>
+                                                <DescriptionItem>
+                                                    <RoadIcon/>
+                                                    {workout && <span>{workout.distance > 1000 ? `${Math.floor(((workout.distance / 100) * 100) / 100)}km` : `${workout.distance}m`}</span>}
+                                                </DescriptionItem>
+                                                <DescriptionItem>
+                                                    <SpeedometerIcon/>
+                                                    {workout && <span>{workout.avgSpeed}km/h</span>}
+                                                </DescriptionItem>
+                                                <DescriptionItem>
+                                                    <TimeIcon/>
+                                                    {workout && <span>{workout.duration / 60 > 60 ? `${Math.floor((workout.duration / 3600) * 100) / 100}h` : workout.duration / 60 < 1 ?  `${workout.duration}s` : `${Math.floor((workout.duration / 60) * 100) / 100} min`}</span>}
+                                                </DescriptionItem>
+                                            </>}
+                                    </Description>
+                                </RightSideWrapper>
+                            </Content>
+                            :
+                            <NoWorkouts>
+                                Nie masz żadnych treningów.
+                            </NoWorkouts>
+                    }
+                </Container>
+                <MobileContainer/>
+            </>
         )
     }
     else return <LoadingScreen />
@@ -139,6 +143,9 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: 18rem auto;
     grid-template-rows: 5rem auto;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
 `
 
 const Content = styled.div({

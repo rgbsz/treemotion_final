@@ -93,6 +93,9 @@ const Container = styled.div`
     grid-template-columns: 1fr 2fr;
     position: relative;
     background: white;
+    @media only screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
 `
 
 const Form = styled.form`
@@ -174,6 +177,9 @@ const Picture = styled.div<{ slide: number }>`
           }
         }
       }
+    }
+    @media only screen and (max-width: 768px) {
+      display: none;
     }
 `
 

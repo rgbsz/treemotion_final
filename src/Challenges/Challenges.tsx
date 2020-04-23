@@ -15,6 +15,7 @@ import BronzeIcon from '../global/img/BronzeIcon'
 import SilverIcon from '../global/img/SilverIcon'
 import GoldIcon from '../global/img/GoldIcon'
 import StateTypes from "../redux/types"
+import MobileContainer from "../global/components/MobileContainer"
 
 const Challenges: React.FC<RouteComponentProps> = () => {
     const [request, setRequest] = useState<boolean>(false)
@@ -122,147 +123,150 @@ const Challenges: React.FC<RouteComponentProps> = () => {
     }
     if(request) {
         return (
-            <Container>
-            <Helmet>
-                <title>Treemotion | Wyzwania</title>
-            </Helmet>
-            <TopPanel/>
-            <NavigationPanel/>
-            <JoinChallengeModal active={joinChallengeModalActive}>
-                <StyledContentItem locked={false}>
-                  <h1>{joinChallengeData && joinChallengeData.name}</h1>
-                  <Bar>
-                    <ProgressBar locked={null}/>
-                    <Part>
-                      <BronzeIcon/>
-                      <Score>{joinChallengeData && joinChallengeData.bronzeMedalDistance} km</Score>
-                    </Part>
-                    <Part>
-                      <SilverIcon/>
-                      <Score>{joinChallengeData && joinChallengeData.silverMedalDistance} km</Score>
-                    </Part>
-                    <Part>
-                      <GoldIcon/>
-                      <Score>{joinChallengeData && joinChallengeData.distance} km</Score>
-                    </Part>
-                  </Bar>
-                </StyledContentItem>
-                <JoinChallengeButtons>
-                    <StyledButton text='Dołącz' loading={joinChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleJoinChallenge(e)}/>
-                    <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setJoinChallengeModalActive(false)}/>
-                </JoinChallengeButtons>
-            </JoinChallengeModal>
-            <LeaveChallengeModal active={leaveChallengeModalActive}>
-                <StyledContentItem locked={false}>
-                  <h1>{leaveChallengeData && leaveChallengeData.challenge.name}</h1>
-                  <Bar>
-                    <ProgressBar locked={null}/>
-                    <Part>
-                      <BronzeIcon/>
-                      <Score>{leaveChallengeData && leaveChallengeData.challenge.bronzeMedalDistance} km</Score>
-                    </Part>
-                    <Part>
-                      <SilverIcon/>
-                      <Score>{leaveChallengeData && leaveChallengeData.challenge.silverMedalDistance} km</Score>
-                    </Part>
-                    <Part>
-                      <GoldIcon/>
-                      <Score>{leaveChallengeData && leaveChallengeData.challenge.distance} km</Score>
-                    </Part>
-                  </Bar>
-                </StyledContentItem>
-                <JoinChallengeButtons>
-                    <StyledButton text='Opuść wyzwanie' loading={leaveChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleLeaveChallenge(e)}/>
-                    <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setLeaveChallengeModalActive(false)}/>
-                </JoinChallengeButtons>
-            </LeaveChallengeModal>
-            <Content>
-              {
-                  (!currentChallenge && challengesHint) &&
-                  <Hint>
-                      Nie masz jeszcze aktywnego wyzwania. Kliknij na wyzwanie, aby do niego dołączyć - kolejne wyzwania zostaną dodane do kolejki i będą po kolei aktywowane wraz z kończeniem wyzwań.
-                      <span onClick={() => {setChallengesHint(null); localStorage.removeItem('challengesHint')}}>Nie pokazuj więcej</span>
-                  </Hint>
-              }
-              {
-              currentChallenge &&
-              <ContentItem locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
-                <Locked>
-                  <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
-                </Locked>
-                <h1>{currentChallenge.challenge.name} ({currentChallenge.userDistance} z {currentChallenge.challenge.distance} km)</h1>
-                <Bar>
-                  <ProgressBar locked={currentChallenge.progress}/>
-                  <Part>
-                    <BronzeIcon/>
-                    <Score>{Math.floor(currentChallenge.challenge.bronzeMedalDistance)} km</Score>
-                  </Part>
-                  <Part>
-                    <SilverIcon/>
-                    <Score>{Math.floor(currentChallenge.challenge.silverMedalDistance)} km</Score>
-                  </Part>
-                  <Part>
-                    <GoldIcon/>
-                    <Score>{Math.floor(currentChallenge.challenge.distance)} km</Score>
-                  </Part>
-                </Bar>
-              </ContentItem>
-            }
-            {
-              futureChallenges &&
-              futureChallenges.map((challenge: any, i: number) => (
-                <ContentItem key={i} locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
-                  <Locked>
-                    <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
-                  </Locked>
-                  <h1>{challenge.challenge.name} - w kolejce</h1>
-                  <Bar>
-                    <ProgressBar locked={null}/>
-                    <Part>
-                      <BronzeIcon/>
-                      <Score>{Math.floor(challenge.challenge.bronzeMedalDistance)} km</Score>
-                    </Part>
-                    <Part>
-                      <SilverIcon/>
-                      <Score>{Math.floor(challenge.challenge.silverMedalDistance)} km</Score>
-                    </Part>
-                    <Part>
-                      <GoldIcon/>
-                      <Score>{Math.floor(challenge.challenge.distance)} km</Score>
-                    </Part>
-                  </Bar>
-                </ContentItem>
-              ))
-            }
-            {
-              allChallenges &&
-              allChallenges.map((challenge: any, i: number) => (
-                <ContentItem key={i} locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
-                  <Locked>
-                    <span>{currentChallenge ? 'Kliknij, aby dodać do kolejki' : 'Kliknij, aby dołączyć'}</span>
-                  </Locked>
-                  <h1>{challenge.name}</h1>
-                  <Bar>
-                    <ProgressBar locked={null}/>
-                    <Part>
-                      <BronzeIcon/>
-                      <Score>{Math.floor(challenge.bronzeMedalDistance)} km</Score>
-                    </Part>
-                    <Part>
-                      <SilverIcon/>
-                      <Score>{Math.floor(challenge.silverMedalDistance)} km</Score>
-                    </Part>
-                    <Part>
-                      <GoldIcon/>
-                      <Score>{Math.floor(challenge.distance)} km</Score>
-                    </Part>
-                  </Bar>
-                </ContentItem>
-              ))
-            }
-            </Content>
+            <>
+                <Container>
+                    <Helmet>
+                        <title>Treemotion | Wyzwania</title>
+                    </Helmet>
+                    <TopPanel/>
+                    <NavigationPanel/>
+                    <JoinChallengeModal active={joinChallengeModalActive}>
+                        <StyledContentItem locked={false}>
+                            <h1>{joinChallengeData && joinChallengeData.name}</h1>
+                            <Bar>
+                                <ProgressBar locked={null}/>
+                                <Part>
+                                    <BronzeIcon/>
+                                    <Score>{joinChallengeData && joinChallengeData.bronzeMedalDistance} km</Score>
+                                </Part>
+                                <Part>
+                                    <SilverIcon/>
+                                    <Score>{joinChallengeData && joinChallengeData.silverMedalDistance} km</Score>
+                                </Part>
+                                <Part>
+                                    <GoldIcon/>
+                                    <Score>{joinChallengeData && joinChallengeData.distance} km</Score>
+                                </Part>
+                            </Bar>
+                        </StyledContentItem>
+                        <JoinChallengeButtons>
+                            <StyledButton text='Dołącz' loading={joinChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleJoinChallenge(e)}/>
+                            <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setJoinChallengeModalActive(false)}/>
+                        </JoinChallengeButtons>
+                    </JoinChallengeModal>
+                    <LeaveChallengeModal active={leaveChallengeModalActive}>
+                        <StyledContentItem locked={false}>
+                            <h1>{leaveChallengeData && leaveChallengeData.challenge.name}</h1>
+                            <Bar>
+                                <ProgressBar locked={null}/>
+                                <Part>
+                                    <BronzeIcon/>
+                                    <Score>{leaveChallengeData && leaveChallengeData.challenge.bronzeMedalDistance} km</Score>
+                                </Part>
+                                <Part>
+                                    <SilverIcon/>
+                                    <Score>{leaveChallengeData && leaveChallengeData.challenge.silverMedalDistance} km</Score>
+                                </Part>
+                                <Part>
+                                    <GoldIcon/>
+                                    <Score>{leaveChallengeData && leaveChallengeData.challenge.distance} km</Score>
+                                </Part>
+                            </Bar>
+                        </StyledContentItem>
+                        <JoinChallengeButtons>
+                            <StyledButton text='Opuść wyzwanie' loading={leaveChallengeRequest} className='StyledButton' onClick={(e: FormEvent<HTMLFormElement>) => handleLeaveChallenge(e)}/>
+                            <StyledButton text='Wróć' loading={false} className='StyledButton' onClick={() => setLeaveChallengeModalActive(false)}/>
+                        </JoinChallengeButtons>
+                    </LeaveChallengeModal>
+                    <Content>
+                        {
+                            (!currentChallenge && challengesHint) &&
+                            <Hint>
+                                Nie masz jeszcze aktywnego wyzwania. Kliknij na wyzwanie, aby do niego dołączyć - kolejne wyzwania zostaną dodane do kolejki i będą po kolei aktywowane wraz z kończeniem wyzwań.
+                                <span onClick={() => {setChallengesHint(null); localStorage.removeItem('challengesHint')}}>Nie pokazuj więcej</span>
+                            </Hint>
+                        }
+                        {
+                            currentChallenge &&
+                            <ContentItem locked={false} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...currentChallenge}) }}>
+                                <Locked>
+                                    <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
+                                </Locked>
+                                <h1>{currentChallenge.challenge.name} ({currentChallenge.userDistance} z {currentChallenge.challenge.distance} km)</h1>
+                                <Bar>
+                                    <ProgressBar locked={currentChallenge.progress}/>
+                                    <Part>
+                                        <BronzeIcon/>
+                                        <Score>{Math.floor(currentChallenge.challenge.bronzeMedalDistance)} km</Score>
+                                    </Part>
+                                    <Part>
+                                        <SilverIcon/>
+                                        <Score>{Math.floor(currentChallenge.challenge.silverMedalDistance)} km</Score>
+                                    </Part>
+                                    <Part>
+                                        <GoldIcon/>
+                                        <Score>{Math.floor(currentChallenge.challenge.distance)} km</Score>
+                                    </Part>
+                                </Bar>
+                            </ContentItem>
+                        }
+                        {
+                            futureChallenges &&
+                            futureChallenges.map((challenge: any, i: number) => (
+                                <ContentItem key={i} locked={true} onClick={() => { setLeaveChallengeModalActive(true); setLeaveChallengeData({...challenge}) }}>
+                                    <Locked>
+                                        <span>{currentChallenge && 'Kliknij, aby porzucić wyzwanie'}</span>
+                                    </Locked>
+                                    <h1>{challenge.challenge.name} - w kolejce</h1>
+                                    <Bar>
+                                        <ProgressBar locked={null}/>
+                                        <Part>
+                                            <BronzeIcon/>
+                                            <Score>{Math.floor(challenge.challenge.bronzeMedalDistance)} km</Score>
+                                        </Part>
+                                        <Part>
+                                            <SilverIcon/>
+                                            <Score>{Math.floor(challenge.challenge.silverMedalDistance)} km</Score>
+                                        </Part>
+                                        <Part>
+                                            <GoldIcon/>
+                                            <Score>{Math.floor(challenge.challenge.distance)} km</Score>
+                                        </Part>
+                                    </Bar>
+                                </ContentItem>
+                            ))
+                        }
+                        {
+                            allChallenges &&
+                            allChallenges.map((challenge: any, i: number) => (
+                                <ContentItem key={i} locked={true} onClick={() => { setJoinChallengeModalActive(true); setJoinChallengeData({...challenge}) }}>
+                                    <Locked>
+                                        <span>{currentChallenge ? 'Kliknij, aby dodać do kolejki' : 'Kliknij, aby dołączyć'}</span>
+                                    </Locked>
+                                    <h1>{challenge.name}</h1>
+                                    <Bar>
+                                        <ProgressBar locked={null}/>
+                                        <Part>
+                                            <BronzeIcon/>
+                                            <Score>{Math.floor(challenge.bronzeMedalDistance)} km</Score>
+                                        </Part>
+                                        <Part>
+                                            <SilverIcon/>
+                                            <Score>{Math.floor(challenge.silverMedalDistance)} km</Score>
+                                        </Part>
+                                        <Part>
+                                            <GoldIcon/>
+                                            <Score>{Math.floor(challenge.distance)} km</Score>
+                                        </Part>
+                                    </Bar>
+                                </ContentItem>
+                            ))
+                        }
+                    </Content>
 
-        </Container>
+                </Container>
+                <MobileContainer/>
+            </>
         )
     }
     else return <LoadingScreen />
@@ -274,6 +278,9 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: 18rem auto;
     grid-template-rows: 5rem auto;
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
 `
 
 const Content = styled.div({
